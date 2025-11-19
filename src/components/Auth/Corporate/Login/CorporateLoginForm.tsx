@@ -17,7 +17,7 @@ import { toast } from "react-toastify";
 const CorporateLoginForm = () => {
   const appHref = useCrossAppAuth();
   const navigate = useNavigate();
-  const { checkUserLoggedIn, setUpdateCheck, fetchCorporateCompanyDetails } = useAppContext();
+  // const { checkUserLoggedIn, setUpdateCheck, fetchCorporateCompanyDetails } = useAppContext();
   const {
     register,
     handleSubmit,
@@ -47,37 +47,42 @@ const CorporateLoginForm = () => {
         throw new Error(error.message);
       } else {
         // Fetch stored user data and check if the user is a corporate user
+        // @from here 
         const userType = secureStorage.getItem<UserRole[]>(SecureStorageKeyEnum.USERTYPE);
-        if (!userType?.includes(UserRole.CORPORATE)) {
-          toast.error(
-            "Oops! You don't have access to log in to this portal. Please contact support for assistance.",
-            getToastOptions({ autoClose: false })
-          );
-          CognitoServiceObj.handleSignOut();
-          return;
-        }
-
+        console.log(userType)
+        debugger
+        // if (!userType?.includes(UserRole.AGENCY)) {
+        //   toast.error(
+        //     "Oops! You don't have access to log in to this portal. Please contact support for assistance.",
+        //     getToastOptions({ autoClose: false })
+        //   );
+        //   CognitoServiceObj.handleSignOut();
+        //   return;
+        // }
+        // @till here
         /**
          * If the account is confirmed, proceed with the sign-in process
          */
         if (response?.isSignedIn) {
           // const email = data.email.toLowerCase();
           // const { response: userResponse, error: userError } = await httpServiceObj.get<[{}]>(`/user/${email}/details`, true, {});
-          const { response: dynamoResponse, error } = await httpServiceObj.get<
-            [Partial<CorporateUserDetail>]
-          >(`/user/${loginData.email}/details`, true, {});
-          if (error) {
-            toast.error("Error: " + error, getToastOptions({ autoClose: false }));
-            CognitoServiceObj.handleSignOut();
-          }
-          await checkUserLoggedIn();
-          await handleRememberDevice();
-          await currentSession();
-          setUpdateCheck(true);
-          await fetchCorporateCompanyDetails();
+          // @from here 
+          // const { response: dynamoResponse, error } = await httpServiceObj.get<
+          //   [Partial<CorporateUserDetail>]
+          // >(`/user/${loginData.email}/details`, true, {});
+          // if (error) {
+          //   toast.error("Error: " + error, getToastOptions({ autoClose: false }));
+          //   CognitoServiceObj.handleSignOut();
+          // }
+          // await checkUserLoggedIn();
+          // await handleRememberDevice();
+          // await currentSession();
+          // setUpdateCheck(true);
+          // await fetchCorporateCompanyDetails();
+          // @till here
           // toast.success("Successfully signed in", getToastOptions({}));
           setTimeout(() => {
-            window.location.href = `/${import.meta.env.APP_PROXY_DASH}/corporate/jobs`;
+            window.location.href = `/dashboards/corporate/home/`;
           }, 2000);
         }
       }
@@ -115,7 +120,7 @@ const CorporateLoginForm = () => {
           <input
             type="email"
             className="input_primary auth_input "
-            {...register("email", validationRules.corporateEmail)}
+            {...register("email")}
           />
           {errors.email && (
             <p className="text-sm text-left text-red-500">{errors.email.message?.toString()}</p>

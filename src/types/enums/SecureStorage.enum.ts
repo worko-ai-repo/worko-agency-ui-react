@@ -25,6 +25,7 @@ export enum SecureStorageKeyEnum {
 	CONTINUEPENDINGPRESIGNEDPROCESS = 'continuePendingPresignedProcess',
 	AUTHACTIVEFORMDATA = 'AuthActiveFormData',
 	AUTHEMPSELECTEDCOMPANY = 'AuthEmpSelectedCompany',
+	CORPORATECOMPANYID = 'corporateCompanyId',
 	CORPORATECOMPANYDERAILS = 'corporateCompanyDetails',
 	// agency
 	AGENCY_ACCESSTOKEN = 'agencyAccessToken',

@@ -75,11 +75,10 @@ export const AppProvider = <T,>({ children }: ContextProviderProps) => {
   ) => {
     try {
       let userResponse;
-      const isCorporateUser =
-        userType?.includes("corporate-admin") || userType?.includes("corporate-recruiter");
-      if (isCorporateUser) {
-        const { response, error } = await httpServiceObj.get<[CorporateUserDetail]>(
-          `/corporate-user/${userId}/cognito`,
+      const isAgencyUser = userType?.includes("agency") || userType?.includes("AGENCY");
+      if (isAgencyUser) {
+        const { response, error } = await httpServiceObj.get<any>(
+          `/agency-user/${userId}/cognito`,
           true,
           {}
         );
@@ -87,8 +86,8 @@ export const AppProvider = <T,>({ children }: ContextProviderProps) => {
           // toast.error('Error: ' + error, getToastOptions({ autoClose: false }));
           throw new Error(error.message);
         }
-        userResponse = response?.[0] || {};
-        if (userResponse?.isDeleted === true) {
+        userResponse = response;
+        if (response?.[0]?.isDeleted === true) {
           toast.error(
             "Your account has been deactivated. Please contact support for assistance.",
             getToastOptions({ autoClose: false })
@@ -96,18 +95,19 @@ export const AppProvider = <T,>({ children }: ContextProviderProps) => {
           CognitoServiceObj.handleSignOut();
           return;
         }
-      } else {
-        const { response, error } = await httpServiceObj.get<[Partial<CorporateUserDetail>]>(
-          `/user/${userEmail}/details`,
-          true,
-          {}
-        );
-        if (error) {
-          // toast.error('Error: ' + error, getToastOptions({ autoClose: false }));
-          throw new Error(error.message);
-        }
-        userResponse = response?.[0] || {};
-      }
+      } 
+      // else {
+      //   const { response, error } = await httpServiceObj.get<[Partial<CorporateUserDetail>]>(
+      //     `/user/${userEmail}/details`,
+      //     true,
+      //     {}
+      //   );
+      //   if (error) {
+      //     // toast.error('Error: ' + error, getToastOptions({ autoClose: false }));
+      //     throw new Error(error.message);
+      //   }
+      //   userResponse = response?.[0] || {};
+      // }
 
       // const userDetails: CorporateUserDetail | Partial<AuthLoginForGeneralUserDto | CorporateUserDto> = {
       // 	lastAccessedDash: userResponse?.lastAccessedDash || '',
@@ -121,29 +121,29 @@ export const AppProvider = <T,>({ children }: ContextProviderProps) => {
       const userDetails: NormalizedUser = normalizeUserData(userResponse);
       setUserDetails(userDetails);
       secureStorage.setItem(SecureStorageKeyEnum.LOGINDETAILS, userDetails);
-      isCorporateUser ? await fetchCorporateCompanyDetails() : null;
+      isAgencyUser ? await fetchAgencyDetails() : null;
     } catch (error) {
       console.error("Error fetching user details:", error);
     }
   };
 
-  const fetchCorporateCompanyDetails = async () => {
+  const fetchAgencyDetails = async () => {
     try {
-      if (!userDetails?.companyId) {
-        console.error("Company ID is missing in user details");
+      if (!userDetails?.id) {
+        console.error("Agency ID is missing in user details");
         return;
       }
       const { response: userCompanyResponse, error: userCompanyError } =
-        await httpServiceObj.get<any>(`/company/${userDetails?.companyId}`, true, {});
+        await httpServiceObj.get<any>(`/agency-user/${userDetails?.id}`, true, {});
       if (userCompanyError) {
-        console.error("Error fetching company details: ", userCompanyError);
+        console.error("Error fetching agency details: ", userCompanyError);
         return;
       }
       if (userCompanyResponse) {
         secureStorage.setItem(SecureStorageKeyEnum.CORPORATECOMPANYDERAILS, userCompanyResponse[0]);
       }
     } catch (error) {
-      console.error("Error in fetchCorporateCompanyDetails: ", error);
+      console.error("Error in fetchAgencyDetails: ", error);
     }
   };
   const checkUserLoggedIn = async () => {
@@ -157,7 +157,8 @@ export const AppProvider = <T,>({ children }: ContextProviderProps) => {
       // Retrieve user-related information from secure storage
       const { tokens } = await fetchAuthSession();
       const cognitoUserDetails: CognitoMetaDataDto | undefined = tokens?.idToken?.payload;
-      const userType: string[] | undefined = cognitoUserDetails?.["cognito:groups"];
+      // const userType: string[] | undefined = cognitoUserDetails?.["cognito:groups"];
+      const userType: string[] | undefined = ["agency","AGENCY"];
       const userEmail = cognitoUserDetails?.email;
       const userId = cognitoUserDetails?.sub;
 
@@ -211,7 +212,7 @@ export const AppProvider = <T,>({ children }: ContextProviderProps) => {
       isModalOpen,
       setIsModalOpen,
       checkUserLoggedIn,
-      fetchCorporateCompanyDetails,
+      fetchAgencyDetails,
       tempCvFile,
       setTempCvFile,
     }),
@@ -227,7 +228,7 @@ export const AppProvider = <T,>({ children }: ContextProviderProps) => {
       isModalOpen,
       setIsModalOpen,
       checkUserLoggedIn,
-      fetchCorporateCompanyDetails,
+      fetchAgencyDetails,
       tempCvFile,
     ]
   );

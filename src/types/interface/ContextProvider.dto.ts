@@ -22,7 +22,7 @@ export interface AppContextType<T> {
   isModalOpen: boolean;
   setIsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   checkUserLoggedIn: () => Promise<void>;
-  fetchCorporateCompanyDetails: () => Promise<void>;
+  fetchAgencyDetails: () => Promise<void>;
   /**
    * Transient CV file selected on hero/login. Persist only in-memory across navigation.
    */

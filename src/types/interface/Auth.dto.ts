@@ -43,6 +43,9 @@ export interface AuthFormDto {
 	termsAndConditions: boolean;
     ctc?: number;
     ectc?: number;
+    phoneNumberDetails:{
+        phoneNumber:string
+    }
 }
 
 /**

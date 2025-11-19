@@ -21,18 +21,18 @@ const Auth = () => {
 		<Suspense fallback={<MainLoader />}>
 			<Routes>
 				<Route element={<AuthLayout />}>
-					<Route path="/login" element={<Login />} />
-					<Route path="/signup" element={<Signup />} />
+					{/* <Route path="/login" element={<Login />} />
+					<Route path="/signup" element={<Signup />} /> */}
 					<Route path="/resetpassword" element={<ForgotPassword />} />
 				</Route>
 				<Route element={<AuthLayout headerIncluded={false} />}>
-					<Route path="/checkRedirection*" element={<CheckRedirection />} />	
-					<Route path = "/linkedinSignup" element = {<LinkedInSignup />} />
-					<Route path="/corporate/signup/:id" element={<CorporateSignup />} />
+					{/* <Route path="/checkRedirection*" element={<CheckRedirection />} />	
+					<Route path = "/linkedinSignup" element = {<LinkedInSignup />} /> */}
+					{/* <Route path="/corporate/signup/:id" element={<CorporateSignup />} />
 					<Route path="/corporate/login" element={<CorporateLogin />} />
-					<Route path="/evaluator-dashboard/login" element={<EvaluatorLogin />} />
+					<Route path="/evaluator-dashboard/login" element={<EvaluatorLogin />} /> */}
 					<Route path="/agency/login" element={<AgencyLogin />} />
-					<Route path="/agency/signup" element={<AgencySignup />} />
+					<Route path="/agency/signup/:id" element={<AgencySignup />} />
 				</Route>
 				{/* <Route path="/corporate/signup/:id" element={<CorporateSignup />} />
 				<Route path="/corporate/login" element={<CorporateLogin />} /> */}

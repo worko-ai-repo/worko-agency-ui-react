@@ -120,7 +120,7 @@ class CognitoService {
         username: user.email,
         password: user.password,
       };
-
+      
       const authData = await signIn(login);
       this.authenticationSubject.next(true);
       secureStorage.setItem(SecureStorageKeyEnum.SIGNINDETAILS, "false");
@@ -383,11 +383,16 @@ class CognitoService {
               roles.push(UserRole.GENERAL_USER);
               break;
             }
+            case UserRole.AGENCY: {
+              roles.push(UserRole.AGENCY);
+              break;
+            }
           }
         }
         secureStorage.setItem<UserRole[]>(SecureStorageKeyEnum.USERTYPE, roles);
       } else {
-        secureStorage.setItem<UserRole[]>(SecureStorageKeyEnum.USERTYPE, [UserRole.GENERAL_USER]);
+        secureStorage.setItem<UserRole[]>(SecureStorageKeyEnum.USERTYPE, [UserRole.AGENCY]);
+        console.warn("No Cognito groups found — defaulting user type to AGENCY (temporary fallback).");
       }
 
       for (let i = 0; i < localStorage.length; i++) {

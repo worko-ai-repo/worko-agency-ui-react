@@ -12,19 +12,20 @@ export default defineConfig(({ mode }) => {
   const isDev = env.APP_MODE === "DEVELOPMENT";
   //below to run in local above to work on dev
   // const isDev = env.APP_MODE === "STAGING";
-  const base_URL = isDev ? `/v0/` : `/`;
+  // const base_URL = isDev ? `/v0/` : `/`;
 
   // console.log("Is staging:", isDev);
   // console.log("APP_MODE:", base_URL);
 
   return {
-    base: base_URL,
+    // base: base_URL,
     plugins: [react(), compression()],
     envDir: "./environments",
     envPrefix: "APP_",
     resolve: {
       alias: {
-        "@": path.resolve(__dirname, "src"),
+        "@": path.resolve(__dirname, "src"), // Add alias for `src`
+        "@AssetsFolder": path.resolve(__dirname, "src/assets"),
         "@Assets": path.resolve(__dirname, "src/assets/assets.ts"),
         "@Components": path.resolve(__dirname, "src/components"),
         "@Context": path.resolve(__dirname, "src/context"),
@@ -34,13 +35,21 @@ export default defineConfig(({ mode }) => {
         "@Layouts": path.resolve(__dirname, "src/layouts"),
         "@Pages": path.resolve(__dirname, "src/pages"),
         "@Styles": path.resolve(__dirname, "src/styles"),
+        "@TypesAndConstants": path.resolve(__dirname, "src/types"),
         "@Services": path.resolve(__dirname, "src/services"),
         "@Utils": path.resolve(__dirname, "src/utils"),
         "@Views": path.resolve(__dirname, "src/views"),
         "@Routes": path.resolve(__dirname, "src/routes.ts"),
       },
     },
+    optimizeDeps: {
+      exclude: ["lib-worko-ui"],
+    },
     server: {
+      hmr: true,
+      fs: {
+        allow: [".."],
+      },
       proxy: {
         "/cognito": {
           target: "https://cognito-idp.ap-south-1.amazonaws.com",
@@ -48,9 +57,9 @@ export default defineConfig(({ mode }) => {
           rewrite: (path) => path.replace(/^\/cognito/, ""),
         },
       },
-      open: false,
+      open: true, // Manually open the browser window upon starting the server
       host: "0.0.0.0",
-      port: 3001,
+      port: 4200,
     },
   };
 });

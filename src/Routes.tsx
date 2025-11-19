@@ -1,5 +1,5 @@
 import { lazy, Suspense } from "react";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "@Layouts/Main-Layout/MainLayout";
 import PageNotFound from "@Pages/errors/404/PageNotFound";
 import MainLoader from "@Components/Loader/Loader";
@@ -64,157 +64,157 @@ const AppRoutes = createBrowserRouter(
       children: [
         {
           index: true,
-          element: (
-            <Suspense fallback={<MainLoader />}>
-              <Hero />
-            </Suspense>
-          ),
+          element: <Navigate to="/auth/agency/login" replace />,
+          // element: (
+          //   <Suspense fallback={<MainLoader />}>
+          //     <Hero />
+          //   </Suspense>
+          // ),
         },
-        {
-          path: "jobs/",
-          children: [
-            {
-              index: true,
-              element: (
-                <Suspense>
-                  <Company />
-                </Suspense>
-              ),
-            },
-            {
-              path: ":companyName/:jobid",
-              element: (
-                <Suspense fallback={<MainLoader />}>
-                  <JobDescription />
-                </Suspense>
-              ),
-            },
-          ],
-        },
-        {
-          path: "referrals/",
-          children: [
-            {
-              index: true,
-              element: (
-                <Suspense>
-                  <Company />
-                </Suspense>
-              ),
-            },
+        // {
+        //   path: "jobs/",
+        //   children: [
+        //     {
+        //       index: true,
+        //       element: (
+        //         <Suspense>
+        //           <Company />
+        //         </Suspense>
+        //       ),
+        //     },
+        //     {
+        //       path: ":companyName/:jobid",
+        //       element: (
+        //         <Suspense fallback={<MainLoader />}>
+        //           <JobDescription />
+        //         </Suspense>
+        //       ),
+        //     },
+        //   ],
+        // },
+        // {
+        //   path: "referrals/",
+        //   children: [
+        //     {
+        //       index: true,
+        //       element: (
+        //         <Suspense>
+        //           <Company />
+        //         </Suspense>
+        //       ),
+        //     },
 
-            {
-              path: ":compId/:id",
-              element: (
-                <Suspense fallback={<MainLoader />}>
-                  <RequestReferral />
-                </Suspense>
-              ),
-            },
-          ],
-        },
-        {
-          path: "for-employee",
-          element: (
-            <Suspense fallback={<MainLoader />}>
-              <Employee />
-            </Suspense>
-          ),
-        },
-        {
-          path: "faq",
-          element: (
-            <Suspense fallback={<MainLoader />}>
-              <FAQ />
-            </Suspense>
-          ),
-        },
-        {
-          path: "terms",
-          element: (
-            <Suspense fallback={<MainLoader />}>
-              <TermsOfUse />
-            </Suspense>
-          ),
-        },
-        {
-          path: "privacy-policy",
-          element: (
-            <Suspense fallback={<MainLoader />}>
-              <PrivacyPolicy />
-            </Suspense>
-          ),
-        },
-        {
-          path: "contact-us",
-          element: (
-            <Suspense fallback={<MainLoader />}>
-              <ContactUs />
-            </Suspense>
-          ),
-        },
-        {
-          path: "about",
-          element: (
-            <Suspense fallback={<MainLoader />}>
-              <About />
-            </Suspense>
-          ),
-        },
-        {
-          path: "corporate",
-          children: [
-            {
-              index: true,
-              element: (
-                <Suspense fallback={<MainLoader />}>
-                  <Corporate />
-                </Suspense>
-              ),
-            },
-            {
-              path: "connect-with-us",
-              element: (
-                <Suspense fallback={<MainLoader />}>
-                  <CorporateConnect />
-                </Suspense>
-              ),
-            },
-          ],
-        },
-
-        {
-          path: "guidance*",
-          element: (
-            <Suspense fallback={<MainLoader />}>
-              <Guidance />
-            </Suspense>
-          ),
-        },
-        ...underConstructionRoutes,
+        //     {
+        //       path: ":compId/:id",
+        //       element: (
+        //         <Suspense fallback={<MainLoader />}>
+        //           <RequestReferral />
+        //         </Suspense>
+        //       ),
+        //     },
+        //   ],
+        // },
+        // {
+        //   path: "for-employee",
+        //   element: (
+        //     <Suspense fallback={<MainLoader />}>
+        //       <Employee />
+        //     </Suspense>
+        //   ),
+        // },
+        // {
+        //   path: "faq",
+        //   element: (
+        //     <Suspense fallback={<MainLoader />}>
+        //       <FAQ />
+        //     </Suspense>
+        //   ),
+        // },
+        // {
+        //   path: "terms",
+        //   element: (
+        //     <Suspense fallback={<MainLoader />}>
+        //       <TermsOfUse />
+        //     </Suspense>
+        //   ),
+        // },
+        // {
+        //   path: "privacy-policy",
+        //   element: (
+        //     <Suspense fallback={<MainLoader />}>
+        //       <PrivacyPolicy />
+        //     </Suspense>
+        //   ),
+        // },
+        // {
+        //   path: "contact-us",
+        //   element: (
+        //     <Suspense fallback={<MainLoader />}>
+        //       <ContactUs />
+        //     </Suspense>
+        //   ),
+        // },
+        // {
+        //   path: "about",
+        //   element: (
+        //     <Suspense fallback={<MainLoader />}>
+        //       <About />
+        //     </Suspense>
+        //   ),
+        // },
+        // {
+        //   path: "corporate",
+        //   children: [
+        //     {
+        //       index: true,
+        //       element: (
+        //         <Suspense fallback={<MainLoader />}>
+        //           <Corporate />
+        //         </Suspense>
+        //       ),
+        //     },
+        //     {
+        //       path: "connect-with-us",
+        //       element: (
+        //         <Suspense fallback={<MainLoader />}>
+        //           <CorporateConnect />
+        //         </Suspense>
+        //       ),
+        //     },
+        //   ],
+        // },
+        // {
+        //   path: "guidance*",
+        //   element: (
+        //     <Suspense fallback={<MainLoader />}>
+        //       <Guidance />
+        //     </Suspense>
+        //   ),
+        // },
+        // ...underConstructionRoutes,
       ],
     },
-    {
-      path: "/post-signup-form",
-      errorElement: <ErrorFallback />,
-      element: (
-        <ProtectedRoute
-          requiredRoles={[UserRole.ADMIN, UserRole.GENERAL_USER]}
-          tokenRequired={true}
-          element={<MainLayout />}
-        />
-      ),
-      children: [
-        {
-          index: true,
-          element: (
-            <Suspense fallback={<MainLoader />}>
-              <JobRecommendationForm />
-            </Suspense>
-          ),
-        },
-      ],
-    },
+    // {
+    //   path: "/post-signup-form",
+    //   errorElement: <ErrorFallback />,
+    //   element: (
+    //     <ProtectedRoute
+    //       requiredRoles={[UserRole.ADMIN, UserRole.GENERAL_USER]}
+    //       tokenRequired={true}
+    //       element={<MainLayout />}
+    //     />
+    //   ),
+    //   children: [
+    //     {
+    //       index: true,
+    //       element: (
+    //         <Suspense fallback={<MainLoader />}>
+    //           <JobRecommendationForm />
+    //         </Suspense>
+    //       ),
+    //     },
+    //   ],
+    // },
     {
       path: "auth/*",
       element: (
@@ -224,9 +224,11 @@ const AppRoutes = createBrowserRouter(
       ),
     },
     {
-      path: "dashboards/*",
+      path: "/*",
       element: (
         <Suspense fallback={<MainLoader />}>
+          {/* @TODO add protected route */}
+          {/* <ProtectedRouteAgency requiredRoles={[UserRole.AGENCY]} element={<DashboardRouter />}/> */}
           <DashboardRouter />
         </Suspense>
       ),
@@ -243,8 +245,8 @@ const AppRoutes = createBrowserRouter(
   // {
   //   ...(import.meta.env.APP_MODE != "STAGING" ? {} : {basename: "/v0/" }),
   // }
-  {
-    ...(import.meta.env.APP_MODE != "DEVELOPMENT" ? {} : { basename: "/v0/" }),
-  }
+  // {
+  //   ...(import.meta.env.APP_MODE != "DEVELOPMENT" ? {} : { basename: "/v0/" }),
+  // }
 );
 export default AppRoutes;

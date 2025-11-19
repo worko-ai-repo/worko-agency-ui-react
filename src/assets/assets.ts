@@ -1,3 +1,4 @@
+
 import bg_plexus from './backgrounds/plexus.webp';
 import employee_hero from './backgrounds/employee_hero.webp';
 import employee_hero_mobile from './backgrounds/employee_hero_mobile.webp';
@@ -19,8 +20,6 @@ import logo_text from './worko-assets/logo-text.webp';
 import logo_text_bright from './worko-assets/logo-text-bright.webp';
 import job_frame from './worko-assets/Job_Frame.webp'
 import ref_frame from './worko-assets/Referral_Frame.webp'
-import corp_office_bg from './worko-assets/office-background.jpg';
-
 import student_male from './backgrounds/student_male.webp'
 import student from './backgrounds/student.webp'
 import student1 from './backgrounds/student1.webp'
@@ -28,11 +27,7 @@ import vector_1 from './backgrounds/vector_1.webp'
 import mag_glass from './backgrounds/mag_glass.webp'
 import check from './backgrounds/check.webp'
 import worko_new from './worko-assets/Worko_new_logo.webp'
-import job_listing_promo from './backgrounds/Job_listing_promo.webp'
-import job_listing_promo_1 from './backgrounds/Job_listing_promo_1.webp'
-import job_listing_promo_2 from './backgrounds/Job_listing_promo_2.webp'
-import job_listing_promo_3 from './backgrounds/Job_listing_promo_3.webp'
-import CTA_Banner from './backgrounds/CTA_Banner.png'
+import evaluationRequest from './worko-assets/evaluationRequest.webp';
 
 import auth_bg from './backgrounds/auth_bg.webp'
 import auth_bg2 from './backgrounds/auth_bg2.webp'
@@ -63,6 +58,7 @@ import f1 from './backgrounds/f1.webp';
 import f2 from './backgrounds/f2.webp';
 import f3 from './backgrounds/f3.webp';
 import gb_form from './backgrounds/gb_form.webp';
+import joining_success_img from './backgrounds/joining_success_img.webp';
 
 // svg
 import coin from './svgs/coin.svg'
@@ -82,18 +78,41 @@ import Bulk_CV from './svgs/bulk_cv.svg';
 import Invites from './svgs/invites.svg';
 import Referral from './svgs/referral.svg';
 import Support from './svgs/support.svg';
-import dash_lines from './backgrounds/dash_lines.svg'
+import Group from './svgs/Group.svg';
+import eyeIcon from './svgs/eye-icon.svg';
+import verified from './svgs/verified.svg';
+import gender from './svgs/gender.svg'
+import customer_support from './svgs/customer_support.svg';
+import salary from './svgs/salary.svg';
+import dashboardSort from './svgs/dashboardSort.svg'
+import checkAndAccept from './svgs/checkAndAccept.svg'
+import iHaveJoined from './svgs/iHaveJoined.svg'
+import viewFeedback from './svgs/viewFeedback.svg'
+import askQuestion from './svgs/askQuestion.svg'
+import magnifyingQuestion from './svgs/magnifyingQuestion.svg'
+import checkbubble from './svgs/check-bubble.svg'
+import Not_Responding from './svgs/not_responding.svg'
+import Archive from './svgs/archive.svg'
+import Duplicate from './svgs/duplicate.svg'
+import Edit from './svgs/edit.svg'
+import Repost from './svgs/repost.svg'
+import View from './svgs/view.svg'
+import Submit from './svgs/submit.svg'
+import clipboard from './svgs/clipboard.svg';
+import inviteTick from './svgs/inviteTick.svg';
+import hireNow from './svgs/hireNow.svg';
+import onHold from './svgs/onHold.svg';
+import sortOrder from './svgs/sortOrder.svg.svg';
+import adminEmployee from './svgs/adminEmployee.svg';
 import cloudUpload from './svgs/cloudUpload.svg';
-import firstClub from './svgs/corp-firstclub.svg';
-import appsforbharat from './svgs/appsforbharat.svg';
-import meesho from './svgs/meesho.svg';
-import ai_dashboard from './svgs/corp-ai-dashboard.svg';
-import talent_pool from './svgs/corp-talent-pool.svg';
-import communication_dashboard from './svgs/corp-communication-dashboard.svg';
-import filter_white from "./svgs/filter_white.svg"
-import lightning_white from "./svgs/lightning_white.svg"
-import time_white from "./svgs/time_white.svg"
-import film from "./svgs/film.svg"
+import email_sync from './svgs/email_sync.svg';
+import mobile_install from './svgs/mobile_install.svg';
+import cancel from './svgs/cancel.svg';
+import clap from './svgs/clap.svg';
+import chat from './svgs/chat.svg'
+import infinitySquare from './svgs/infinitySquare.svg'
+import folder_open from './svgs/folder_open.svg'
+import Warehouse from './svgs/Warehouse.svg'
 export { 
     // Backgrounds
     bg_plexus,
@@ -103,11 +122,7 @@ export {
     vector_1,
     mag_glass,
     check,
-    job_listing_promo,
-    job_listing_promo_1,
-    job_listing_promo_2,
-    job_listing_promo_3,
-    CTA_Banner,
+
     employee_hero,
     employee_hero_mobile,
     employee_stepper_1_cursor,
@@ -129,7 +144,7 @@ export {
     
     c11, c12, c13, c14,
     c21, c22, c23, c24,
-    f1, f2, f3, gb_form,
+    f1, f2, f3, gb_form,joining_success_img,
 
 
     // Worko Assets
@@ -149,9 +164,10 @@ export {
     ref_frame,
     worko_new,
     corporatehero,
-    corp_office_bg,
+    evaluationRequest,
 
     //svgs
+    clipboard,
     coin,
     about_bg,
     document,
@@ -169,16 +185,38 @@ export {
     Referral,
     Invites,
     Support,
-    dash_lines,
+    Group,
+    eyeIcon,
+    verified,
+    gender,
+    customer_support,
+    salary,
+    dashboardSort,
+    checkAndAccept,
+    iHaveJoined,
+    viewFeedback,
+    askQuestion,
+    chat,
+    infinitySquare,
+    folder_open,
+    Warehouse,
+    magnifyingQuestion,
+    checkbubble,
+    Not_Responding,
+    Archive,
+    Duplicate,
+    Edit,
+    Repost,
+    View,
+    Submit,
+    inviteTick,
+    hireNow,
+    onHold,
+    sortOrder,
+    adminEmployee,
     cloudUpload,
-    meesho,
-    firstClub,
-    appsforbharat,
-    ai_dashboard,
-    talent_pool,
-    communication_dashboard,
-    filter_white,
-    lightning_white,
-    time_white,
-    film,
+    email_sync,
+    mobile_install,
+    cancel,
+    clap
 };

@@ -28,6 +28,12 @@ import mag_glass from './backgrounds/mag_glass.webp'
 import check from './backgrounds/check.webp'
 import worko_new from './worko-assets/Worko_new_logo.webp'
 import evaluationRequest from './worko-assets/evaluationRequest.webp';
+import job_listing_promo from './backgrounds/Job_listing_promo.webp'
+import job_listing_promo_1 from './backgrounds/Job_listing_promo_1.webp'
+import job_listing_promo_2 from './backgrounds/Job_listing_promo_2.webp'
+import job_listing_promo_3 from './backgrounds/Job_listing_promo_3.webp'
+import CTA_Banner from './backgrounds/CTA_Banner.png'
+import corp_office_bg from './worko-assets/office-background.jpg';
 
 import auth_bg from './backgrounds/auth_bg.webp'
 import auth_bg2 from './backgrounds/auth_bg2.webp'
@@ -113,6 +119,17 @@ import chat from './svgs/chat.svg'
 import infinitySquare from './svgs/infinitySquare.svg'
 import folder_open from './svgs/folder_open.svg'
 import Warehouse from './svgs/Warehouse.svg'
+import dash_lines from './backgrounds/dash_lines.svg'
+import firstClub from './svgs/corp-firstclub.svg';
+import appsforbharat from './svgs/appsforbharat.svg';
+import meesho from './svgs/meesho.svg';
+import ai_dashboard from './svgs/corp-ai-dashboard.svg';
+import talent_pool from './svgs/corp-talent-pool.svg';
+import communication_dashboard from './svgs/corp-communication-dashboard.svg';
+import filter_white from "./svgs/filter_white.svg"
+import lightning_white from "./svgs/lightning_white.svg"
+import time_white from "./svgs/time_white.svg"
+import film from "./svgs/film.svg"
 export { 
     // Backgrounds
     bg_plexus,
@@ -122,6 +139,11 @@ export {
     vector_1,
     mag_glass,
     check,
+    job_listing_promo,
+    job_listing_promo_1,
+    job_listing_promo_2,
+    job_listing_promo_3,
+    CTA_Banner,
 
     employee_hero,
     employee_hero_mobile,
@@ -165,6 +187,7 @@ export {
     worko_new,
     corporatehero,
     evaluationRequest,
+    corp_office_bg,
 
     //svgs
     clipboard,
@@ -218,5 +241,16 @@ export {
     email_sync,
     mobile_install,
     cancel,
-    clap
+    clap,
+    dash_lines,
+    meesho,
+    firstClub,
+    appsforbharat,
+    ai_dashboard,
+    talent_pool,
+    communication_dashboard,
+    filter_white,
+    lightning_white,
+    time_white,
+    film,
 };

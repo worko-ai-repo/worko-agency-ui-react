@@ -90,12 +90,12 @@ export default function ApplicantScreeningTable() {
   }
   const companyId = RBAC.can("play_admin")
     ? import.meta.env.APP_WORKO_COMP_ID
-    : userDetails?.companyId || "";
+    : userDetails?.companyId || "01JWAQF1G96E0SE9XHXSFGHNWW";
   const fallbackKeys = {};
   const params: Omit<CursorPaginationAdminBulkScreenedJobsParams, "lastKey"> = {
     pageSize: pageSize,
     sortOrder: "descending",
-    companyId: companyId || "",
+    companyId: companyId || "01JWAQF1G96E0SE9XHXSFGHNWW",
     corporateBulkJdId: id as string,
   };
 

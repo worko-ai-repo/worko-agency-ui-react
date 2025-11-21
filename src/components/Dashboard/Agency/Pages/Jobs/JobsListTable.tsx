@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Eye, Pencil, Upload, User } from "lucide-react";
+import { CopyCheck, Eye, Pencil, Upload, User } from "lucide-react";
 import { useSortableData } from "@Hooks/useSortTableData.hook";
 import secureStorage from "@Utils/SecureStorage.utils";
 import { SecureStorageKeyEnum } from "@Enums/SecureStorage.enum";
@@ -8,6 +8,7 @@ import { NormalizedUser } from "@Utils/NormalizeUser";
 import { AgencyJobsList } from "@Interfaces/AgencyDashboardList.dto";
 import UploadProfile from "./modals/UploadProfile";
 import { DynamicTableTwo } from "@Components/Shared/DynamicTableTwo";
+import DuplicateUploadProfileCheck from "./modals/DuplicateUploadProfileCheck";
 
 
 export const getCvViewDate = (statusTracker: any[]) => {
@@ -66,6 +67,7 @@ export default function JobsListTable(props: any) {
   const [isProfileUploadModalOpen,setIsProfileUploadModalOpen] = useState<boolean>(false);
   const [selectedRow,setSelectedRow] = useState<AgencyJobsList | null>(null);
   const [pageSize, setPageSize] = useState(pagination?.pageSize || 10);
+  const [checkIsDuplicate, setCheckIsDuplicate] = useState<boolean>(false);
   // App context
   const { userDetails } = useAppContext() as { userDetails: NormalizedUser };
 
@@ -243,16 +245,28 @@ const columns = [
         key: "uploadProfile",
         label: "Upload Profile",
         sortable: true,
+        contentWidth: `max-w-none`,
         render: (row: AgencyJobsList) => (
-            <div className='flex justify-center m-auto w-[150px]'>
+            <div className='flex justify-center m-auto'>
                 <button 
+                title="upload new profile"
                 onClick={()=>{
                   setSelectedRow(row)
                   setIsProfileUploadModalOpen(true)
                 }}
-                className="bg-blue-500 p-3 text-white rounded-xl flex flex-row gap-1 justify-center items-center">
+                className="mx-1 bg-blue-500 p-3 text-white rounded-xl flex flex-row gap-1 justify-center items-center">
                     <Upload/>
                     Upload profile
+                </button>
+                <button
+                title="check duplicate profile"
+                className="mx-1 bg-green-500 p-3 text-white rounded-xl flex flex-row gap-1 justify-center items-center"
+                onClick={()=>{
+                  setSelectedRow(row)
+                  setCheckIsDuplicate(true)
+                }}
+                >
+                  <CopyCheck/>
                 </button>
             </div>
         ),
@@ -373,7 +387,13 @@ const columns = [
         onClose= {()=>setIsProfileUploadModalOpen(false)}
         isOpen={isProfileUploadModalOpen}
         rowData={selectedRow}
-    />
+        />
+        <DuplicateUploadProfileCheck
+        dashboardType={"AGENCY"}
+        onClose= {()=>setCheckIsDuplicate(false)}
+        isOpen={checkIsDuplicate}
+        rowData={selectedRow}
+        />
     </>
   );
 }

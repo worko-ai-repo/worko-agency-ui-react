@@ -1,6 +1,6 @@
 import { FunctionComponent, useState, useCallback, useMemo, useEffect } from "react";
 // import { Column, DynamicTable } from "../DynamicTable";
-// import { eyeIcon } from "@AssetsFolder/assets";
+import { eyeIcon } from "@AssetsFolder/assets";
 import { BulkScreeningListItemDto } from "src/types/interface/CorporateServices.dto";
 import { useAppContext } from "@Context/App.context";
 
@@ -36,7 +36,7 @@ const ScreeningListView: FunctionComponent = () => {
   const { userDetails } = useAppContext();
   const companyId = RBAC.can("play_admin")
     ? import.meta.env.APP_WORKO_COMP_ID
-    : userDetails?.companyId || "";
+    : userDetails?.companyId || "01JWAQF1G96E0SE9XHXSFGHNWW";
   const [pageSize, setPageSize] = useState<number>(10);
   const keyFallbacks = {
     jobTitle: ["jobTitle", "jobTitle"],
@@ -118,7 +118,7 @@ const ScreeningListView: FunctionComponent = () => {
           className="flex mx-auto items-center justify-center rounded-lg w-10 h-8 bg-gradient-to-t from-[#57E1E1] to-[#57E1E1] relative">
           <img
             className="w-4 h-4 rounded-md bg-[#57E1E1] absolute top-[30%]"
-            // src={eyeIcon}
+            src={eyeIcon}
             alt="View Details"
           />
         </button>

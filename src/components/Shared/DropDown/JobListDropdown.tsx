@@ -29,46 +29,41 @@ type JobListDropdownProps = {
 
 const fetchJobs = async (
   search: string,
-  dashboard: "CORPORATE" | "ADMIN" = "CORPORATE",
-  userId?: string
+  userEmail?: any
 ): Promise<DropDownSelectedJobData[]> => {
   const userCognitoDetails = secureStorage.getItem<any>(SecureStorageKeyEnum.COGNITOUSERDETAILS);
-  const userType = userCognitoDetails?.["cognito:groups"]?.[0];
 
   const payload = {
-    pageSize: 25,
+    pageSize: 200,
     sortOrder: "desc",
-    dashboard: dashboard,
-    ...(dashboard !== "ADMIN" && {
-      userRole: userType,
-      ...(userType === "corporate-recruiter" && { corporateRecruiterUserId: userId }),
-      companyId:
-        secureStorage.getItem<any>(SecureStorageKeyEnum.CORPORATECOMPANYID)?.companyId ||
-        secureStorage.getItem<any>(SecureStorageKeyEnum.LOGINDETAILS)?.companyId,
-    }),
+    agencyRegisteredEmail: userEmail,
+    status: "ACTIVE",
     searchText: search.trim(),
+    includeJobDetails:true,
   };
 
-  const response = await CorporateServiceObj.fetchJobs(payload);
+  const response = await CorporateServiceObj.fetchAgencyJobs(payload);
   return response?.data || [];
 };
 
 const JobListDropdown: React.FC<JobListDropdownProps> = ({
   onSelect,
   placeholder = "Search jobs...",
-  dashboard = "CORPORATE",
 }) => {
   const [searchText, setSearchText] = useState("");
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const { userDetails } = useAppContext();
   const { data: jobs = [], isLoading } = useQuery({
-    queryKey: ["jobsPopup", searchText],
-    queryFn: () => fetchJobs(searchText, dashboard, userDetails?.id),
-    enabled: true,
+    queryKey: ["jobsPopup", searchText, userDetails?.email],
+    queryFn: () => fetchJobs(searchText, userDetails?.email),
+    enabled: !!userDetails?.email,
     staleTime: 5 * 60 * 1000,
   });
-
+  useEffect(()=>{
+    console.log(userDetails)
+    console.log(jobs)
+  },[jobs])
   const handleSelectJob = (job: DropDownSelectedJobData) => {
     setSearchText(job.jobTitle);
     setDropdownVisible(false);
@@ -122,9 +117,9 @@ const JobListDropdown: React.FC<JobListDropdownProps> = ({
                 {jobs.map((job) => (
                   <div
                     key={job.id}
-                    onClick={() => handleSelectJob(job)}
+                    onClick={() => handleSelectJob(job.jobDetails)}
                     className="p-2 px-3 hover:bg-blue-50 border-b-2 rounded-md cursor-pointer capitalize">
-                    <div className="text-sm font-medium text-left">{job.jobTitle}</div>
+                    <div className="text-sm font-medium text-left">{job.jobDetails.jobTitle}</div>
                     <div className="flex items-center gap-2 text-xs text-gray-500 mt-0.5">
                       <span
                         className={`w-2 h-2 rounded-full ${

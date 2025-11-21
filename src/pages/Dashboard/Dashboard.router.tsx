@@ -3,6 +3,7 @@ import { lazy, Suspense } from 'react';
 import MainLoader from '@Components/Loader/Loader';
 import { AppProvider } from '@Context/App.context';
 import DashboardLayout from '@Layouts/Main-Layout/Dashboard.layout';
+import ApplicantScreeningTable from '@Components/Shared/BulkCvPage/BulkCvApplicants';
 // import Applicants from '@Components/Dashboard/Corporate/Applicants/Applicants';
 
 const PageNotFound = lazy(() => import('@Pages/errors/404/PageNotFound'));
@@ -69,6 +70,14 @@ const Dashboard = () => {
                             element={
                                 <Suspense fallback={<MainLoader />}>
                                     <BulkCVCheck />
+                                </Suspense>
+                            }
+                        />
+                        <Route
+                            path="agBulkCVCheck/listing/:id"
+                            element={
+                                <Suspense fallback={<MainLoader />}>
+                                    <ApplicantScreeningTable />
                                 </Suspense>
                             }
                         />

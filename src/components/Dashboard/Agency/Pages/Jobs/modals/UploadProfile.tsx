@@ -160,9 +160,10 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
           }
           
           const uploadResponse:any = await uploadingProfileWithAllFields(payload);
-          // console.log(uploadResponse,"uploadResponse")
           if (!uploadResponse.success) {
-            toast.error("Failed to invite agency. Please try again.", getToastOptions({}));
+            console.log(uploadResponse.data.message)
+            setIsDuplicateModal(true)
+            // toast.error(uploadResponse.data.message, getToastOptions({}));
             return; 
           }
           toast.success("Profile uploaded successfully",getToastOptions({}))
@@ -178,14 +179,14 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
     
       const uploadingProfileWithAllFields = async (payload: any) => {
         try {
-          const { response } = await httpServiceObj.post(`${agencyBaseUrl}/agency-user-submission/`, payload, true, {}, true);
+          const { response, error } = await httpServiceObj.post(`${agencyBaseUrl}/agency-user-submission/`, payload, true, {}, true);
           if (response) {
             return { success: true, data: response };
           }
-          return { success: false };
+          return { success: false, data:error };
         } catch (error) {
           console.error("Upload failed:", error);
-          return { success: false, error };
+          return { success: false, data:error };
         }
       };
 
@@ -463,17 +464,20 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
             <div className="flex justify-start mt-4">
               <button
               disabled = {isSubmitting} 
-              className="flex items-center gap-1 px-3 py-3 rounded-xl bg-blue-600 text-white hover:bg-blue-700">
+              className="flex items-center gap-1 px-3 py-3 rounded-xl 
+             bg-blue-600 text-white 
+             hover:bg-blue-700
+             disabled:opacity-50 disabled:cursor-not-allowed">
                 <SendIcon className='h-4 w-4'/>
                 {isSubmitting ? 'Submitting...' : 'Submit'}
               </button>
             </div>
           </form>
         </div>
-        {/* <DuplicateModal
+        <DuplicateModal
           onClose={()=>setIsDuplicateModal(false)}
           isOpen={isDuplicateModal}
-          /> */}
+          />
       </div>
     )
   }

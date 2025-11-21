@@ -308,9 +308,16 @@ const JobsList = () => {
     //     console.log(error)
     //   }
     // }
-  
+  const demo = async () =>{
+    const params = {
+      pageSize:200
+    }
+    const {response} = await httpServiceObj.get("https://api.dev.worko.work/company",true,params,true)
+    console.log(response)
+  }
     //@TODO remove this below useeffect later
     useEffect(()=>{
+      demo()
       fetchJobsData(1, pageSize, "");
     },[])
 
@@ -394,18 +401,17 @@ const JobsList = () => {
           });
           }, []);
 
-const StatusFilterDropdown = [
-  { label: "All", onClick: () => { setStatusFilter("")}},
-  { label: "Applied", onClick: () => { setStatusFilter("APPLIED")}},
-  { label: "Accepted", onClick: () => { setStatusFilter("ACCEPTED")}},
-  { label: "Under Evaluation", onClick: () => { setStatusFilter("UNDER_EVALUATION")} },
-  { label: "Processing Interview", onClick: () => { setStatusFilter("PROCESSING_INTERVIEW")} },
-  { label: "Interview Done", onClick: () => { setStatusFilter("INTERVIEW_DONE")}},
-  { label: "Hiring In Process", onClick: () => { setStatusFilter("HIRING_IN_PROCESS")}},
-  { label: "Hired", onClick: () => { setStatusFilter("HIRED")}},
-  { label: "Joined", onClick: () => { setStatusFilter("JOINED")}},
-  { label: "Rejected", onClick: () => { setStatusFilter("REJECTED")}},
-];
+    const CompanyFilterDropdown = [
+      { label: "All", onClick: () => { setStatusFilter("") }},
+      { label: "Nellsys", onClick: () => { setStatusFilter("Nellsys") }},
+      { label: "Byjus", onClick: () => { setStatusFilter("Byjus") }},
+      { label: "Flipkart", onClick: () => { setStatusFilter("Flipkart") }},
+      { label: "Amazon", onClick: () => { setStatusFilter("Amazon") }},
+      { label: "Google", onClick: () => { setStatusFilter("Google") }},
+      { label: "Infosys", onClick: () => { setStatusFilter("Infosys") }},
+      { label: "TCS", onClick: () => { setStatusFilter("TCS") }},
+      { label: "Wipro", onClick: () => { setStatusFilter("Wipro") }},
+    ];
 
   return (
     <div>
@@ -416,7 +422,7 @@ const StatusFilterDropdown = [
               selectTitle={"Select Company"}
               tooltipMessage="Select Company to filter"
               disabled={false}
-              options={StatusFilterDropdown}
+              options={CompanyFilterDropdown}
             />
           </div>
       </div>

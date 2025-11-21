@@ -17,7 +17,11 @@ const DuplicateModal: FC<DuplicateModalProps> = ({
     if (isOpen) {
       setVisible(true);
       const timer = setTimeout(() => setIsAnimatingIn(true), 10);
-      return () => clearTimeout(timer);
+      const messageTimer = setTimeout(() => onClose(), 3000);
+      return () => {
+        clearTimeout(timer)
+        clearTimeout(messageTimer)
+      };
     } else {
       setIsAnimatingIn(false);
       const timer = setTimeout(() => setVisible(false), 300);

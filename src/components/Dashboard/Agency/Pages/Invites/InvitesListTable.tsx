@@ -77,7 +77,6 @@ export default function InvitesListTable(props: any) {
   const [isPauseAgencyModelOpen,setIsPauseAgencyModelOpen] = useState<boolean>(false);
   const [isDeleteAgencyModelOpen,setIsDeleteAgencyModelOpen] = useState<boolean>(false);
   const [pageSize, setPageSize] = useState(pagination?.pageSize || 10);
-  const agencyBaseUrl = import.meta.env.APP_PROXY_AGENCY_BASE;
 
   // App context
   const { userDetails } = useAppContext();
@@ -85,8 +84,8 @@ export default function InvitesListTable(props: any) {
   // Sorting hook (keeps same fallback keys as before)
   const keyFallbacks = {
     companyName: ["companyName"],
-    senderName: ["senderName"],
-    date: ["date"],
+    senderName: ["inviterName"],
+    date: ["createdAt"],
   };
   // const { sortedData, onSortChange } = useSortableData(data as any, keyFallbacks);
       const { sortedData, onSortChange } = useSortableData<AgencyInvitesListDetailsDto>(data, keyFallbacks, {
@@ -115,7 +114,7 @@ export default function InvitesListTable(props: any) {
       inviteStatus: acceptOrReject.trim(),
     }
     try {
-      const {response, error} = await httpServiceObj.patch(`${agencyBaseUrl}/agency-invite/agency-action`,payload,true,{},true)
+      const {response, error} = await httpServiceObj.patch(`/agency-invite/agency-action`,payload,true,{},false,"BASE")
       let msg = acceptOrReject == "ACCEPTED" 
       ? "Invite accept failed please try again" 
       : "Invite reject failed please try again"
@@ -180,7 +179,7 @@ export default function InvitesListTable(props: any) {
     },
     {
         key: "action",
-        label: "Action",
+        label: "Action / Current status",
         sortable: false,
         contentWidth: `max-w-none`,
         render: (row: AgencyInvitesListDetailsDto) => {

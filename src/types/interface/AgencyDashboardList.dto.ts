@@ -14,7 +14,6 @@ export interface AgencyInvitesListDetailsDto {
   }
   updatedAt: string;
   updatedByAgencyUserId: string;
-  // upcoming
   inviterName:string;
   companyName:string;
 }
@@ -48,7 +47,7 @@ export interface AgencyJobsList {
   updatedAt: string; 
   jobDetails:JobDetails;
   //fake data
-  candidatesUploaded:number;
+  totalCandidatesUploaded:number;
   candidatesRejected:number;
   candidatesInProcess:number;
   agencyUserInviteId:string;
@@ -125,6 +124,7 @@ export interface AgencyApplicantsListDetailsDto {
   jobDetails: JobDetails;
   jobId: string;
   updatedAt: string;
+  jobApplicationStatus:string;
 }
 
 export interface JobDetails {
@@ -171,6 +171,10 @@ export interface JobDetails {
   typeofEmployment: string;
   updatedAt: string;
   workMode: string;
+  userPreferredDepartments: any;
+  userPreferredIndustries: any;
+  userPreferredLocations: any;
+  userPreferredRoles: any;
 }
 
 export interface CandidateParsedCvDetails {

@@ -24,8 +24,8 @@ export class HttpService {
 
 	constructor() {
 	  this.API_URI = {
-		  ["BASE"]: import.meta.env.APP_API_URI || 'https://api.worko.ai',
-		  ["JOB"]: import.meta.env.APP_JOBS_API_URI || 'https://jobs.worko.ai',
+		  ["BASE"]: import.meta.env.APP_API_URI,
+		  ["JOB"]: import.meta.env.APP_JOBS_API_URI,
 	  };
 	}
 

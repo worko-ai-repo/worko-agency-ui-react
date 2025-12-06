@@ -472,7 +472,7 @@ const JobCard: React.FC<JobCardProps> = ({
 
           {/* Match Score - Moved inside the flex container */}
           <div
-            className="hidden md:flex py-4 box-content ml-auto rounded-xl w-[91.5px] h-[75px] sm:w-[122px] sm:h-[100px] 
+            className="md:flex py-4 box-content ml-auto rounded-xl w-[91.5px] h-[75px] sm:w-[122px] sm:h-[100px] 
             flex-shrink-0 bg-gradient-to-b from-blue-500 to-blue-600
             overflow-hidden text-white p-3 sm:pb-4 sm:p-4 flex flex-col items-center justify-end scale-90">
             {/* Gauge Component */}

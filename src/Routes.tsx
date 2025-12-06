@@ -56,7 +56,7 @@ const AppRoutes = createBrowserRouter(
       errorElement: <ErrorFallback />,
       element: (
         <ProtectedRoute
-          requiredRoles={[UserRole.ADMIN, UserRole.CORPORATE, UserRole.GENERAL_USER]}
+          requiredRoles={[UserRole.ADMIN, UserRole.CORPORATE, UserRole.GENERAL_USER, UserRole.AGENCY]}
           tokenRequired={false}
           element={<MainLayout />}
         />

@@ -19,6 +19,7 @@ export type DropDownSelectedJobData = {
   jobTitle: string;
   status: string;
   jobDescription: string;
+  jobDetails:any;
 };
 
 type JobListDropdownProps = {
@@ -42,7 +43,7 @@ const fetchJobs = async (
     includeJobDetails:true,
   };
 
-  const response = await CorporateServiceObj.fetchAgencyJobs(payload);
+  const response:any = await CorporateServiceObj.fetchAgencyJobs(payload);
   return response?.data || [];
 };
 

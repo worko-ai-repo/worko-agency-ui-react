@@ -33,7 +33,6 @@ const AgencySignup = () => {
   const [pendingProcessedSignup, setPendingProcessedSignup] = useState<AuthSignupBaseDto | null>(null);
   const { setPendingApply, tempCvFile, PendingApply, isLoggedIn, setUpdateCheck, setUserDetails } = useAppContext();
   const [userSub,setUserSub] = useState("")
-  const agencyBaseUrl = import.meta.env.APP_PROXY_AGENCY_BASE
   // Function to show error modals
   const showModalsError = (caseType: string) => {
     switch (caseType) {
@@ -335,7 +334,7 @@ const AgencySignup = () => {
         try {
           // Use processed snapshot for backend mutation; ensure latest values were used to set state already
           setPendingProcessedSignup(processed);
-          toast.info("OTP sent to your email. Please verify it.", getToastOptions());
+          // toast.info("OTP sent to your email. Please verify it.", getToastOptions());
 
           return true;
         } catch (mutationError: any) {
@@ -367,7 +366,7 @@ const AgencySignup = () => {
 
       // Check if the confirmation was successful
       if (response) {
-        toast.success("User registered successfully", getToastOptions());
+        // toast.success("User registered successfully", getToastOptions());
         await handleAutoLogin(autoLoginData);
         // Handle the confirmed sign-up as needed
         try {
@@ -413,7 +412,7 @@ const AgencySignup = () => {
       // } else {
       //   if (response?.isSignedIn) {
       //     const session = await fetchAuthSession();
-      //     const { response: userResponse, error: userError } = await httpServiceObj.get<any>(`${agencyBaseUrl}/agency-user/${session.userSub}/cognito`, true, {}, true);
+      //     const { response: userResponse, error: userError } = await httpServiceObj.get<any>(`/agency-user/${session.userSub}/cognito`, true, {}, false,"BASE");
           // if (userError) {
           //   toast.error("Error: " + userError, getToastOptions());
           //   throw new Error();
@@ -447,14 +446,14 @@ const AgencySignup = () => {
     }
   };
   return (
-    <div id="Authlayout" className="h-[100vh] flex justify-center items-center w-full bg-white relative overflow-hidden">
-      <div className="absolute bottom-0 -left-48 w-[25vw] h-[20vw] rounded-[10vh] rotate-[245deg] z-10 bg-gradient-to-b from-cyan-400 to-blue-500"></div>
-      <div className="absolute top-0 -right-48 w-[25vw] h-[20vw] rounded-[10vh] rotate-[65deg] z-10 bg-gradient-to-b from-cyan-400 to-blue-500"></div>
+    <div id="Authlayout" className="min-h-screen overflow-auto flex justify-center items-center w-full bg-white relative">
+      <div className="absolute bottom-0 -left-48 w-[25vw] h-[20vw] rounded-[10vh] rotate-[245deg] z-10 bg-gradient-to-b from-cyan-400 to-blue-500 hidden lg:block"></div>
+      <div className="absolute top-0 -right-48 w-[25vw] h-[20vw] rounded-[10vh] rotate-[65deg] z-10 bg-gradient-to-b from-cyan-400 to-blue-500 hidden lg:block"></div>
       
       {/* worko logo */}
-      <div className="absolute top-4 center-4 z-20">
+      {/* <div className="absolute top-4 center-4 z-20 bc">
         <img src={logo_text} alt="Worko Logo" className="w-32 h-auto" />
-      </div>
+      </div> */}
       
       {isLoading && !data ? (
         <MainLoader />

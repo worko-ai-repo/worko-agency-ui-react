@@ -23,7 +23,8 @@ import {
 import { BulkJdParsedData } from "@Components/Dashboard/Agency/Pages/BulkCVCheck/BulkCvCheck";
 import { AgencyListDetailsDto } from "@Interfaces/AgencyDatabaseApplicantDetailsDto";
 
-const agencyBaseUrl = import.meta.env.APP_PROXY_AGENCY_BASE
+const workoBaseApi = import.meta.env.APP_API_URI_WORKO_BASE
+const workoJobApi = import.meta.env.APP_API_URI_WORKO_JOB
 /**
  * Corporate Service File
  *
@@ -248,12 +249,12 @@ class CorporateService {
   async parseJobDescription(jobDescription: string): Promise<BulkJdParsedData | null> {
     try {
       const { response } = await httpServiceObj.post<any>(
-        "https://jobs.dev.worko.work/job/parsejd",
+        `${workoJobApi}/job/parsejd`,
         { jobDescription },
         true,
         {},
         true,
-        "JOB"
+        // "JOB"
       );
 
       if (!response) {
@@ -287,14 +288,14 @@ class CorporateService {
   async bulkScreening(payload: any): Promise<CorporateBulkScreeningDto | {}> {
     try {
       const { response } = await httpServiceObj.post<CorporateBulkScreeningDto>(
-        "https://api.dev.worko.work/corporate-bulk-jd/",
+        `${workoBaseApi}/corporate-bulk-jd/`,
         payload,
         true,
         {},
         true,
         // "BASE"
       );
-
+      
       if (!response) {
         throw new Error("No response received");
       }
@@ -319,7 +320,7 @@ class CorporateService {
   ): Promise<BulkUploadResponseDto | {}> {
     try {
       const { response } = await httpServiceObj.post<BulkUploadResponseDto>(
-        `https://api.dev.worko.work/corporate-bulk-jd/${bulkCvId}/resumes`,
+        `${workoBaseApi}/corporate-bulk-jd/${bulkCvId}/resumes`,
         { bulkCvs: payload },
         true,
         {},
@@ -348,7 +349,7 @@ class CorporateService {
   async fetchBulkScreenedJobs(params: object): Promise<ApiResponseDto<BulkScreeningListItemDto>> {
     try {
       const { response } = await httpServiceObj.get<ApiResponseDto<BulkScreeningListItemDto>>(
-        `https://api.dev.worko.work/corporate-bulk-jd/`,
+        `${workoBaseApi}/corporate-bulk-jd/`,
         true,
         params,
         true,
@@ -379,7 +380,7 @@ class CorporateService {
   async getBulkScreeningResumes(params: object): Promise<ApiResponseDto<ResumeScreeningRecordDto>> {
     try {
       const { response } = await httpServiceObj.get<ApiResponseDto<ResumeScreeningRecordDto>>(
-        `https://api.dev.worko.work/corporate-bulk-jd-resume/`,
+        `${workoBaseApi}/corporate-bulk-jd-resume/`,
         true,
         params,
         true,
@@ -586,10 +587,11 @@ class CorporateService {
   async agencyList(params: object): Promise<AgencyListDetailsDto | []> {
     try {
       const { response } = await httpServiceObj.get<AgencyListDetailsDto>(
-        `${agencyBaseUrl}/agency-invite`,
+        `/agency-invite`,
         true,
         params,
-        true,
+        false,
+        "BASE"
       );
 
       if (!response) {

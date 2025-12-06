@@ -69,7 +69,6 @@ const InvitesList = () => {
   const [paginationInfo, setPaginationInfo] = useState(initialPaginationState);
   const [currentPage, setCurrentPage] = useState(1);
   const paginationKeysRef = useRef<Record<number, string>>({1: "",});
-  const agencyBaseUrl = import.meta.env.APP_PROXY_AGENCY_BASE
   const { userDetails } = useAppContext();
   const [jobsList,setJobsList] = useState([]);
 
@@ -82,7 +81,7 @@ const InvitesList = () => {
   //   includeInvitedOwnerDetails: true
   // }
   //     try {
-  //       const {response} = await httpServiceObj.get<any>(`${agencyBaseUrl}/agency-invite/`,true,params,true)
+  //       const {response} = await httpServiceObj.get<any>(`/agency-invite/`,true,params,false,"BASE")
   //       console.log(response)
   //     } catch (error) {
   //       console.log(error)
@@ -105,7 +104,7 @@ const InvitesList = () => {
   
       setIsLoading(true);
       try {
-        const url = `${agencyBaseUrl}/agency-invite/`;
+        const url = `/agency-invite/`;
         const params = {
           agencyEmail: userDetails?.email,
           // inviteStatus: "AWAITING",
@@ -115,7 +114,7 @@ const InvitesList = () => {
           lastKey,
           sortOrder,
         }
-        const { response } = await httpServiceObj.get<AgencyListApiResponse>(url, true, params, true);
+        const { response } = await httpServiceObj.get<AgencyListApiResponse>(url, true, params, false,"BASE");
   
         if (response) {
           setFetchData(response.data);
@@ -155,7 +154,7 @@ const InvitesList = () => {
   // }
 
   //   try {
-  //     const {response} = await httpServiceObj.get<any>(`${agencyBaseUrl}/agency-invite/`,true,params,true)
+  //     const {response} = await httpServiceObj.get<any>(`/agency-invite/`,true,params,false,"BASE")
   //     if(response?.data){
   //       setJobsList(response.data)
   //     }
@@ -165,7 +164,7 @@ const InvitesList = () => {
   // }
   
   useEffect(() => {
-    console.log(userDetails)
+    // console.log(userDetails)
       if (userDetails?.email) {
         setCurrentPage(1);
         setPaginationInfo((prev) => ({ ...prev, lastKey: "" }));

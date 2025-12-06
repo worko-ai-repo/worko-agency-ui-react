@@ -163,7 +163,7 @@ const Credits = () => {
           <span className='bg-cyan-300 text-cyan-300 text-lg rounded-[50%] h-2 w-2 border-cyan-100'></span>
           <span className='font-semibold text-sm'>Payment Transactions</span>
         </div>
-        <span className='text-gray-400 text-2xl'>...</span>
+        {/* <span className='text-gray-400 text-2xl'>...</span> */}
       </div>
 
       {/* Second row */}

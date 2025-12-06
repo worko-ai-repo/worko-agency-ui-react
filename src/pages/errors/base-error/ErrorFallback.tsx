@@ -41,6 +41,16 @@ const ErrorFallback = ({ error }: { error?: Error }) => {
             { label: "Login as Admin", action: () => nav("/auth/login"), type: "warning" },
           ],
         });
+      } else if (hasRole(UserRole.AGENCY)) {
+        setModalData({
+          type: "error",
+          heading: { message: "Agency Access Denied", type: "error" },
+          message: "You do not have access to this page.",
+          buttons: [
+            { label: "Go to Home", action: () => nav("/"), type: "primary" },
+            { label: "Login as Agency", action: () => nav("/auth/agency/login"), type: "warning" },
+          ],
+        });
       } else {
         setModalData({
           type: "error",
@@ -48,7 +58,7 @@ const ErrorFallback = ({ error }: { error?: Error }) => {
           message: "You do not have access to this page. Please contact your administrator.",
           buttons: [
             { label: "Go to Home", action: () => nav("/"), type: "primary" },
-            { label: "Login", action: () => nav("/auth/login"), type: "warning" },
+            { label: "Login", action: () => nav("/auth/agency/login"), type: "warning" },
           ],
         });
       }

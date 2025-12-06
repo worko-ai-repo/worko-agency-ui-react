@@ -45,7 +45,6 @@ const DuplicateUploadProfileCheck:React.FC<DuplicateUploadProfileCheckProps> = (
       const [isSubmitting,setIsSubmitting]  = useState(false);
       const [isDuplicateModal,setIsDuplicateModal] = useState(false);
       const [isNotDuplicateModal,setIsNotDuplicateModal] = useState(false);
-      const agencyBaseUrl = import.meta.env.APP_PROXY_AGENCY_BASE
       const { userDetails } = useAppContext();
 
       useEffect(() => {
@@ -82,7 +81,7 @@ const DuplicateUploadProfileCheck:React.FC<DuplicateUploadProfileCheckProps> = (
         phoneCountryCode:91
       }
       try {
-      const {response} = await httpServiceObj.get<any>(`${agencyBaseUrl}/corporate-candidate-profile/duplicate`,true,params,true) 
+      const {response} = await httpServiceObj.get<any>(`/corporate-candidate-profile/duplicate`,true,params,false,"BASE") 
       if(response.isDuplicateProfile){
         setIsDuplicateModal(true)
       }else{

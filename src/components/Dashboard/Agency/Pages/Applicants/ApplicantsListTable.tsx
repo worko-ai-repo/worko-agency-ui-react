@@ -130,7 +130,6 @@ export default function ApplicantsListTable(props: any) {
   // App context
   const [pageSize, setPageSize] = useState(pagination?.pageSize || 10);
   const { userDetails } = useAppContext() as { userDetails: NormalizedUser };
-  const agencyBaseUrl = import.meta.env.APP_PROXY_AGENCY_BASE
   const [isViewCVModalOpen,setIsViewCVModalOpen] = useState<boolean>(false);
 
   // Sorting hook (keeps same fallback keys as before)
@@ -395,8 +394,10 @@ export default function ApplicantsListTable(props: any) {
           label: "Location",
           sortable: true,
           render: (row: AgencyApplicantsListDetailsDto) => (
-              <div className='flex justify-center m-auto w-[150px]'>
-                  <span>{row?.candidateParsedCvDetails?.location ?? "NA"}</span>
+                <div className='flex justify-center m-auto w-[150px]'>
+                  <span 
+                  title={row?.candidateParsedCvDetails?.location}
+                  className="truncate block w-full">{row?.candidateParsedCvDetails?.location ?? "NA"}</span>
               </div>
           ),
       },
@@ -438,6 +439,7 @@ export default function ApplicantsListTable(props: any) {
               className="flex flex-row justify-center items-center"
               onClick={()=>{
               viewCV(row)
+              setEditProfileData(row)
               }}>
               <img src={View} alt="View" className="w-8 h-8 btn-sky shrink-0 "/>
               </button>
@@ -453,13 +455,13 @@ export default function ApplicantsListTable(props: any) {
               //     <span>{row?.currentStatus ?? "NA"}</span>
               // </div>
               const colorClass =
-                  statusColors[row?.jobDetails?.status as JobApplicationStatusType] ?? "bg-gray-100 text-gray-500";
+                  statusColors[row?.jobApplicationStatus as JobApplicationStatusType] ?? "bg-gray-100 text-gray-500";
       
               return (
                   <div className="flex justify-center  mx-auto p-2 w-fit relative">
                   <span
                       className={`px-3 py-1 h-fit rounded-full text-xs font-medium overflow-visible  capitalize ${colorClass}`}>
-                      {newDisplayStatus[row?.jobDetails?.status as JobApplicationStatusType]}
+                      {newDisplayStatus[row?.jobApplicationStatus as JobApplicationStatusType]}
                   </span>
                   </div>
               );
@@ -480,7 +482,7 @@ export default function ApplicantsListTable(props: any) {
             candidateCvAwsS3FileName: row?.candidateParsedCvDetails?.cvAwsS3FileName,
         }
         try {
-        const {response} = await httpServiceObj.post<any>(`${agencyBaseUrl}/file/gsu2v/AGENCY_SUBMIT_USER_CV`,payload,true,{},true,)
+        const {response} = await httpServiceObj.post<any>(`/file/gsu2v/AGENCY_SUBMIT_USER_CV`,payload,true,{},false,"BASE")
         setPdfViewDetails(response.objectUrl)
         setIsViewCVModalOpen(true)
         } catch (error) {
@@ -534,7 +536,14 @@ export default function ApplicantsListTable(props: any) {
           {!pdfViewDetails ? (
             <NoDataPresent />
           ) : (
-            <CVPreviewRaw pdfUrl={pdfViewDetails} onClose={() => setIsViewCVModalOpen(false)} />
+            <CVPreviewRaw 
+            pdfUrl={pdfViewDetails} 
+            onClose={() => {
+              setIsViewCVModalOpen(false)
+              setEditProfileData(undefined)
+            }} 
+            candidateFullDetails={editProfileData}
+            showDownload={true}/>
           )}
         </Modal>
     </>

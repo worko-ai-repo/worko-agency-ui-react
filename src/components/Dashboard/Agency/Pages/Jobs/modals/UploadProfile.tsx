@@ -21,6 +21,7 @@ interface UploadProfileProps{
     onClose: () => void;
     isOpen: boolean;
     rowData: AgencyJobsList | null;
+    localUpdate: (id: string, updatedData: Partial<any>) => void;
 }
 
 interface FormValues {
@@ -39,9 +40,32 @@ interface FormValues {
   negotiable:boolean;
   cv: FileList;
   comments:string;
+  coreSkills:any;
+  technicalSkills:any;
+  userPreferredDepartments:string[];
+  userPreferredIndustries:string[];
+  userPreferredRoles:string[];
+  userPreferredlocations:string[];
 }
 
-const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpen,rowData}) => {
+type ParsedCandidate = {
+  name?: string;
+  email?: string;
+  phoneNumberDetails?: { number?: string };
+  currentCompany?: string;
+  currentDesignation?: string;
+  totalYOE?: number;
+  relevantYOE?: number;
+  location?: string;
+  coreSkills:any;
+  technicalSkills:any;
+  userPreferredDepartments:string[];
+  userPreferredIndustries:string[];
+  userPreferredRoles:string[];
+  userPreferredlocations:string[];
+};
+
+const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpen,rowData,localUpdate}) => {
   const { register, handleSubmit, reset, setValue, watch,formState: { errors },} = useForm<FormValues>({ mode: "onChange",
         defaultValues: {
           candidateName: "",
@@ -55,16 +79,27 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
           expectedCTC:null,
           location:"",
           relocate:true,
-          noticePeriod:null,
+          noticePeriod:0,
           negotiable:true,
           comments:"",
+          coreSkills:[],
+          technicalSkills:[],
+          userPreferredDepartments:[],
+          userPreferredIndustries:[],
+          userPreferredRoles:[],
+          userPreferredlocations:[],
         },
       });
       const [visible, setVisible] = useState(false);
       const [isAnimatingIn, setIsAnimatingIn] = useState(false);
       const [isSubmitting,setIsSubmitting]  = useState(false);
       const [isDuplicateModal,setIsDuplicateModal] = useState(false);
-      const agencyBaseUrl = import.meta.env.APP_PROXY_AGENCY_BASE
+      const [isResumeValid,setIsResumeValid] = useState(false);
+      const [permanentDisable,setPermanentDisable] = useState(true);
+      const [isContactNumberValid,setIsContactNumberValid] = useState(true);
+      const [showFullForm,setShowFullForm] = useState<boolean>(false);
+      const [isCVParsing, setIsCVParsing] = useState<boolean>(false)
+      const [cloudFileName,setCloudFileName] = useState<string | undefined>("");
       const { userDetails } = useAppContext();
 
       useEffect(() => {
@@ -78,14 +113,114 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
           return () => clearTimeout(timer);
       }
       }, [isOpen]);
-  
+    
+      const handleCVUpload = async(e:any) => {
+        if(!rowData){
+          toast.error("Company details not found",getToastOptions({}))
+          return
+        }
+        if(!userDetails){
+          toast.error("User details not found",getToastOptions({}))
+          return
+        }
+
+        setIsContactNumberValid(true)
+        setShowFullForm(false)
+
+        setValue("candidateName", "");
+        setValue("candidateEmail", "");
+        setValue("candidateContact", "");
+        setValue("currentCompany", "");
+        setValue("currentDesignation", "");
+        setValue("totalYOE", null);
+        setValue("relevantYOE", null);
+        setValue("location", "");
+        setValue("relocate", true);
+        setValue("noticePeriod", 0);
+        setValue("negotiable", true);
+        setValue("coreSkills", []);
+        setValue("technicalSkills", []);
+        setValue("userPreferredDepartments", []);
+        setValue("userPreferredIndustries", []);
+        setValue("userPreferredRoles", []);
+        setValue("userPreferredlocations", []);
+
+        // console.log(e.target.files[0])
+        const cvFile = e.target.files[0]
+        const payloadForAws = {
+          companyId: rowData?.jobDetails?.companyId,
+          jobId: rowData?.jobDetails?.id,
+          fileName: cvFile.name,
+          fileMimeType: "application/pdf"
+        }
+        if(cvFile){
+          setIsCVParsing(true)
+        }
+        const responseFromAws = await creatingRequestToUploadToAws(payloadForAws);
+        // console.log(responseFromAws,"response from aws")
+        if (!responseFromAws.success) {
+          toast.error("Failed to upload contract copy", getToastOptions({}));
+          setIsCVParsing(false)
+          return;
+        }
+        setCloudFileName(responseFromAws?.data?.cloudFileName)
+        // 2. upload cv to s3 bucket this will give s3filename
+        const payloadForFileUpload = {
+          fileType: responseFromAws?.data?.fileMimeType
+        }
+        const fileUpload = await uploadFileToAws(responseFromAws?.data?.awsS3SignedUrl, cvFile,payloadForFileUpload);
+
+        // 3. only posting cloudfilename
+        const updatedPayload = {
+          companyId: rowData?.jobDetails?.companyId,
+          jobId: rowData?.jobDetails?.id,
+          candidateParsedCvAwsS3FileName: responseFromAws?.data?.cloudFileName,
+        }
+        const createResponse = await uploadingProfileWithOnlyCVName(updatedPayload);
+        if(!createResponse?.success && (createResponse?.error as { message?: string })?.message === "Failed to parse CV."){
+          toast.error("Failed to parse CV. Please upload a valid CV in pdf format only", getToastOptions({}));
+          setIsCVParsing(false)
+          return
+        }
+        if (!createResponse?.success) {
+          setIsDuplicateModal(true)
+          setIsCVParsing(false)
+          return;
+        }
+        setShowFullForm(true)
+        const data = createResponse.data as ParsedCandidate;
+        setValue("candidateName", data?.name ?? "");
+        setValue("candidateEmail", data?.email ?? "");
+        setValue("candidateContact", data?.phoneNumberDetails?.number ?? "");
+        setValue("currentCompany", data?.currentCompany ?? "");
+        setValue("currentDesignation", data?.currentDesignation ?? "");
+        setValue("totalYOE", data?.totalYOE ?? null);
+        setValue("relevantYOE", data?.relevantYOE ?? null);
+        setValue("location", data?.location ?? "");
+        setValue("relocate", true);
+        setValue("noticePeriod", 0);
+        setValue("negotiable", true);
+        setValue("coreSkills", data?.coreSkills ?? []);
+        setValue("technicalSkills", data?.technicalSkills ?? []);
+        setValue("userPreferredDepartments", data?.userPreferredDepartments ?? []);
+        setValue("userPreferredIndustries", data?.userPreferredIndustries ?? []);
+        setValue("userPreferredRoles", data?.userPreferredRoles ?? []);
+        setValue("userPreferredlocations", data?.userPreferredlocations ?? []);      
+        if(data?.phoneNumberDetails?.number?.toString().length !== 10){
+          setIsContactNumberValid(false)
+        }
+        setIsResumeValid(true)
+        setIsCVParsing(false)
+      }
+
     const formSubmit = async (data: any) => {
       setIsSubmitting(true)
       data.relocate = data.relocate === "true" || data.relocate === "yes" ? true : false;
 
       if(!data.candidateName || !data.candidateEmail || !data.candidateContact || !data.currentCompany
-        || !data.currentDesignation || !data.totalYOE || !data.relevantYOE || !data.currentCTC || !data.expectedCTC || !data.location || data.relocate === undefined || !data.noticePeriod || data.negotiable === undefined || !data.cv?.length){
+        || !data.currentDesignation || !data.totalYOE || !data.relevantYOE || !data.currentCTC || !data.expectedCTC || !data.location || data.relocate === undefined || data.noticePeriod === null || data.noticePeriod === undefined || data.negotiable === undefined || !data.cv?.length){
           toast.error("please fill all the required fields",getToastOptions({}))
+          setIsSubmitting(false)
           return
       }
       if(!rowData){
@@ -97,41 +232,6 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
         return
       }
         try {
-        // 1. creating request to upload file to aws we will get awsS3SignedUrl as response
-        const cvFile = data.cv?.[0];
-        const payloadForAws = {
-          companyId: rowData?.jobDetails?.companyId,
-          jobId: rowData?.jobDetails?.id,
-          fileName: cvFile.name,
-          fileMimeType: "application/pdf"
-        }
-        const responseFromAws = await creatingRequestToUploadToAws(payloadForAws);
-          // console.log(responseFromAws,"response from aws")
-          if (!responseFromAws.success) {
-            toast.error("Failed to upload contract copy", getToastOptions({}));
-            return;
-          }
-
-          // 2. upload cv to s3 bucket this will give s3filename
-          const payloadForFileUpload = {
-            fileType: responseFromAws?.data?.fileMimeType
-          }
-          const fileUpload = await uploadFileToAws(responseFromAws?.data?.awsS3SignedUrl, cvFile,payloadForFileUpload);
-
-          // 3. only posting cloudfilename
-          const updatedPayload = {
-            companyId: rowData?.jobDetails?.companyId,
-            jobId: rowData?.jobDetails?.id,
-            candidateParsedCvAwsS3FileName: responseFromAws?.data?.cloudFileName,
-          }
-          const createResponse = await uploadingProfileWithOnlyCVName(updatedPayload);
-          // console.log(createResponse,'createResponse')
-          if (!createResponse?.success) {
-            toast.error("upload profie failed. Please try again.", getToastOptions({}));
-            return;
-          }
-
-          // 3. posting full data 
           const payload={
               name: data?.candidateName,
               email: data?.candidateEmail,
@@ -145,28 +245,41 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
               relevantYOE: data?.relevantYOE ,
               currentCTC: data?.currentCTC,
               expectedCTC: data?.expectedCTC,
-              noticePeriod: data?.noticePeriod,
+              noticePeriod: Number(data?.noticePeriod),
               location: data?.location,
               readyToRelocate: data?.relocate,
               isNoticePeriodNegotiable: data?.negotiable,
-              cvAwsS3FileName: responseFromAws?.data?.cloudFileName,
+              cvAwsS3FileName: cloudFileName,
               companyId: rowData?.jobDetails?.companyId,
               jobId: rowData?.jobDetails?.id,
               agencyUserInviteId:rowData?.agencyUserInviteId,
-          } as any;
+              coreSkills: data?.coreSkills ?? [],
+              technicalSkills: data?.technicalSkills ?? [],
+              userPreferredDepartments: data?.userPreferredDepartments ?? [],
+              userPreferredIndustries: data?.userPreferredIndustries ?? [],
+              userPreferredlocations: data?.userPreferredLocations ?? [],
+              userPreferredRoles: data?.userPreferredRoles ?? []
+          } as any;      
 
           if (data?.comments?.trim()) {
             payload.agencyComments = data.comments.trim();
           }
-          
           const uploadResponse:any = await uploadingProfileWithAllFields(payload);
           if (!uploadResponse.success) {
-            console.log(uploadResponse.data.message)
-            setIsDuplicateModal(true)
-            // toast.error(uploadResponse.data.message, getToastOptions({}));
+            console.log(uploadResponse.data)
+            // setIsDuplicateModal(true)
+            toast.error(uploadResponse.data.message, getToastOptions({}));
             return; 
           }
           toast.success("Profile uploaded successfully",getToastOptions({}))
+          if(rowData?.totalCandidatesUploaded){
+              const updatedData = {...rowData,totalCandidatesUploaded:rowData?.totalCandidatesUploaded + 1}
+              localUpdate(rowData?.id,updatedData)
+          }else{
+              const updatedData = {...rowData,totalCandidatesUploaded:1}
+              localUpdate(rowData?.id,updatedData)
+          }
+          setShowFullForm(false)
           reset()
           onClose()
         } catch (error) {
@@ -179,7 +292,7 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
     
       const uploadingProfileWithAllFields = async (payload: any) => {
         try {
-          const { response, error } = await httpServiceObj.post(`${agencyBaseUrl}/agency-user-submission/`, payload, true, {}, true);
+          const { response, error } = await httpServiceObj.post(`/agency-user-submission/`, payload, true, {}, false,"BASE");
           if (response) {
             return { success: true, data: response };
           }
@@ -192,7 +305,7 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
 
       const creatingRequestToUploadToAws = async (payload: any) => {
         try {
-          const { response } = await httpServiceObj.post<UploadToAwsData>(`${agencyBaseUrl}/file/gsu2u/AGENCY_SUBMIT_USER_CV`, payload, true, {}, true);
+          const { response } = await httpServiceObj.post<UploadToAwsData>(`/file/gsu2u/AGENCY_SUBMIT_USER_CV`, payload, true, {}, false,"BASE");
           if (response) {
             return { success: true, data: response };
           }
@@ -218,11 +331,11 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
 
       const uploadingProfileWithOnlyCVName = async (payload: any) => {
         try {
-          const { response } = await httpServiceObj.post(`${agencyBaseUrl}/agency-user-submission/candidate-parse-cv`, payload, true, {}, true);
+          const { response,error } = await httpServiceObj.post(`/agency-user-submission/candidate-parse-cv`, payload, true, {}, false,"BASE");
           if (response) {
             return { success: true, data: response };
           }
-          return { success: false };
+          return { success: false,error };
         } catch (error) {
           console.error("Agency creation failed:", error);
           return { success: false, error };
@@ -240,6 +353,7 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
           }`}>
           <button
             onClick={()=>{
+                setShowFullForm(false)
                 reset();
                 onClose();}}
             className="absolute top-2 right-2 text-gray-500 hover:text-gray-700">
@@ -249,21 +363,61 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
           <h2 className="text-xl font-semibold mb-4 text-left">Upload profile</h2>
   
           <form onSubmit={handleSubmit(formSubmit)}>
+            <div className='text-left mt-4'>
+              <label htmlFor="cv">CV (PDF only)<span className='text-red-500'>*</span></label>
+              <input
+                  type="file"
+                  accept="application/pdf"
+                  {...register("cv", {
+                  required: "please upload candidate cv",
+                  validate: {
+                      isPdf: (value: FileList) =>
+                      value?.[0]?.type === "application/pdf" || "Only PDF files are allowed.",
+                      isUnder5MB: (value: FileList) =>
+                      value?.[0]?.size <= 5 * 1024 * 1024 || "File size must be under 5MB",
+                  },
+                  })}
+                  className="input_primary auth_input"
+                    onChange={(e) => {
+                    const files = e.target.files;
+                    if (!files || files.length === 0) return;
+
+                    const file = files[0];
+                    if (!file || file.type !== "application/pdf") {
+                      toast.error("Only PDF files are allowed",getToastOptions({}));
+                      return;
+                    }
+                    register("cv").onChange(e);
+                    handleCVUpload(e);
+                  }}
+              />
+              {errors.cv && (
+                  <p className="text-red-500 text-sm mt-1">{errors.cv.message}</p>
+              )}
+            </div>
+            {isCVParsing && 
+            <div className='text-left'>
+            <span className='text-xs'>Cv is being parsed please wait...</span>
+            </div>}
+            {showFullForm &&
             <div className='text-left'>
                 <label>Candidate name<span className='text-red-500'>*</span></label>
                 <input
-                placeholder='Rahul yadav'
+                disabled={permanentDisable}
+                // placeholder='Rahul yadav'
                 type="text"
                 className="input_primary auth_input capitalize"
                 {...register("candidateName", { required: "Candidate name is required." })}
                 />
                 {errors.candidateName && <p className="text-red-500 text-sm mt-1">{errors.candidateName.message}</p>}
-            </div>
+            </div>}
   
+              {showFullForm &&
               <div className='text-left'>
                   <label htmlFor="">Candidate email<span className='text-red-500'>*</span></label>
                   <input 
-                  placeholder='rahulyadav@gmail.com'
+                  disabled={permanentDisable}                  
+                  // placeholder='rahulyadav@gmail.com'
                   type="text" 
                   className="input_primary auth_input"
                   {...register("candidateEmail", {
@@ -275,12 +429,14 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                     })}
                   />
                 {errors.candidateEmail && <p className="text-red-500 text-sm mt-1">{errors.candidateEmail.message}</p>}
-              </div>
-  
-                <div className='text-left'>
+              </div>}
+              
+              {showFullForm &&
+              <div className='text-left'>
                   <label htmlFor="">Current contact no<span className='text-red-500'>*</span></label>
                   <input
-                  placeholder='Enter valid contact number'
+                  disabled={isContactNumberValid}
+                  // placeholder='Enter valid contact number'
                   maxLength={10}
                     type="text"
                     className="input_primary auth_input capitalize"
@@ -293,98 +449,156 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                     })}
                     onInput={(e) => {
                         const input = e.target as HTMLInputElement;
-                        input.value = input.value.replace(/\D/g, ''); // remove non-digits
+                        input.value = input.value.replace(/\D/g, '');
                     }}
                     />
                   {errors.candidateContact && <p className="text-red-500 text-sm mt-1">{errors.candidateContact.message}</p>}
-              </div>
+              </div>}
 
               {/* ask if current company is optional or manditory*/}
+              {showFullForm &&
               <div className='text-left'>
                   <label htmlFor="">Current company<span className='text-red-500'>*</span></label>
                   <input 
-                  placeholder='Infosys'
-                  type="text" 
-                  className="input_primary auth_input"
-                  {...register("currentCompany",{required:"Current company is required"})}
+                    disabled={!isResumeValid}
+                    // placeholder='Infosys'
+                    type="text" 
+                    className="input_primary auth_input"
+                    {...register("currentCompany",{required:"Current company is required"})}
                   />
                   {errors.currentCompany && <p className="text-red-500 text-sm mt-1">{errors.currentCompany.message}</p>}
-              </div>
+              </div>}
 
+              {showFullForm &&
               <div className='text-left'>
                   <label htmlFor="">Current designation<span className='text-red-500'>*</span></label>
                   <input 
-                    placeholder='sales manager'
+                    disabled={!isResumeValid}
+                    // placeholder='sales manager'
                     type="text" 
                     className="input_primary auth_input capitalize"
                     {...register("currentDesignation", {required: "please specify the designation"})}
                   />
                 {errors.currentDesignation && <p className="text-red-500 text-sm mt-1">{errors.currentDesignation.message}</p>}
-              </div>
+              </div>}
 
             {/* ask if experience is in months how to handle and what is its a fresher*/} {/* total and relevant yoe */}
+            {showFullForm &&
             <div className='flex flex-row gap-3'>
                 <div className='text-left'>
                     <label htmlFor="">Total YOE (in years)<span className='text-red-500'>*</span></label>
                     <input 
-                      placeholder='total experience'
+                      disabled={!isResumeValid}
+                      // placeholder='total experience'
                       type="number" 
                       className="input_primary auth_input"
-                      {...register("totalYOE",{required:"total experience must be filled"})}
+                      onKeyDown={(e) => {
+                        if (["-", "+", ".", "e", "E"].includes(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onPaste={(e) => {
+                        e.preventDefault();
+                      }}
+                      {...register("totalYOE",{
+                          required:"total experience must be filled",
+                          min: { value: 0, message: "Experience cannot be negative" }
+                        },
+                      )}
                     />
                     {errors.totalYOE && <p className="text-red-500 text-sm mt-1">{errors.totalYOE.message}</p>}
                 </div>
                 <div className='text-left'>
                     <label htmlFor="">Relevant YOE (in years)<span className='text-red-500'>*</span></label>
                     <input 
-                    placeholder='relevant experience'
-                    type="number" 
-                    className="input_primary auth_input"
-                    {...register("relevantYOE",{required:"relevant experience must be filled"})}
+                      disabled={!isResumeValid}
+                      // placeholder='relevant experience'
+                      type="number" 
+                      className="input_primary auth_input"
+                      onKeyDown={(e) => {
+                        if (["-", "+", ".", "e", "E"].includes(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onPaste={(e) => {
+                        e.preventDefault();
+                      }}
+                      {...register("relevantYOE",{
+                        required:"relevant experience must be filled",
+                        min: { value: 0, message: "Experience cannot be negative" }
+                      })}
                     />
                     {errors.relevantYOE && <p className="text-red-500 text-sm mt-1">{errors.relevantYOE.message}</p>}
                 </div>
-            </div>
+            </div>}
 
             {/* current and expected ctc */}
+            {showFullForm &&
             <div className='flex flex-row gap-3'>
                 <div className='text-left'>
                     <label htmlFor="">Current CTC (in LPA)<span className='text-red-500'>*</span></label>
                     <input 
-                    placeholder='5'
-                    type="number" 
-                    className="input_primary auth_input"
-                    {...register("currentCTC",{required:"current Ctc is required"})}
+                      disabled={!isResumeValid}
+                      // placeholder='5'
+                      type="number" 
+                      className="input_primary auth_input"
+                      onKeyDown={(e) => {
+                        if (["-", "+", ".", "e", "E"].includes(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onPaste={(e) => {
+                        e.preventDefault();
+                      }}
+                      {...register("currentCTC",{
+                        required:"current Ctc is required",
+                        min: { value: 0, message: "Current CTC cannot be negative" }
+                      })}
                     />
                     {errors.currentCTC && <p className="text-red-500 text-sm mt-1">{errors.currentCTC.message}</p>}
                 </div>
                 <div className='text-left'>
                     <label htmlFor="">Expected CTC (in LPA)<span className='text-red-500'>*</span></label>
-                    <input 
-                    placeholder='7'
-                    type="number" 
-                    className="input_primary auth_input"
-                    {...register("expectedCTC",{required:"expected Ctc is required"})}
+                    <input
+                      disabled={!isResumeValid}
+                      // placeholder='7'
+                      type="number" 
+                      className="input_primary auth_input"
+                      onKeyDown={(e) => {
+                        if (["-", "+", ".", "e", "E"].includes(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
+                      onPaste={(e) => {
+                        e.preventDefault();
+                      }}
+                      {...register("expectedCTC",{
+                        required:"expected Ctc is required",
+                        min: { value: 0, message: "Expected CTC cannot be negative" }
+                      })}
                     />
                     {errors.expectedCTC && <p className="text-red-500 text-sm mt-1">{errors.expectedCTC.message}</p>}
                 </div>
-            </div>
+            </div>}
 
             {/* location and preference */}
+            {showFullForm &&
             <div className='flex flex-row gap-3'>
                 <div className='text-left flex-1'>
                     <label htmlFor="">Location (current)<span className='text-red-500'>*</span></label>
-                    <input 
-                    placeholder='mumbai'
-                    type="text" 
-                    className="input_primary auth_input"
-                    {...register("location",{required:"current location is required"})}
+                    <input
+                      disabled={!isResumeValid}
+                      // placeholder='mumbai'
+                      type="text" 
+                      className="input_primary auth_input"
+                      {...register("location",{required:"current location is required"})}
                     />
                     {errors.location && <p className="text-red-500 text-sm mt-1">{errors.location.message}</p>}
                 </div>
                 <div className='text-left flex-1'>
                     <label htmlFor="">Ready to relocate<span className='text-red-500'>*</span></label>
                     <select
+                      disabled={!isResumeValid}
                       className="input_primary auth_input text-gray-300"
                       {...register("relocate", {
                         required: "relocation preference is required",
@@ -402,23 +616,34 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
 
                     {errors.relocate && <p className="text-red-500 text-sm mt-1">{errors.relocate.message}</p>}
                 </div>
-            </div>
+            </div>}
 
             {/* notice period and negotiable */}
+            {showFullForm &&
             <div className='flex flex-row gap-3 justify-center items-center'>
                 <div className='text-left flex-1'>
                     <label htmlFor="">Notice period (in days)<span className='text-red-500'>*</span></label>
-                    <input 
-                      placeholder='Notice Period'
-                      type="number" 
+                    <select
+                      disabled={!isResumeValid}
                       className="input_primary auth_input"
-                      {...register("noticePeriod",{required:"notice period is required"})}
-                    />
+                      {...register("noticePeriod", {
+                        required: "Notice period is required"
+                      })}
+                    >
+                      <option value={0}>Immediate</option>
+                      <option value={15}>15 Days</option>
+                      <option value={30}>30 Days</option>
+                      <option value={45}>45 Days</option>
+                      <option value={60}>60 Days</option>
+                      <option value={90}>90 Days</option>
+                      <option value={120}>120 Days</option>
+                    </select>
                     {errors.noticePeriod && <p className="text-red-500 text-sm mt-1">{errors.noticePeriod.message}</p>}
                 </div>
                 <div className='text-left flex-1'>
                     <label htmlFor="negotiable" className="flex items-center gap-2">
                     <input
+                      disabled={!isResumeValid}
                       id="negotiable"
                       type="checkbox"
                       className="accent-blue-600 w-4 h-4"
@@ -429,38 +654,20 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                 {errors.negotiable && <p className="text-red-500 text-[11px] mt-1">{errors.negotiable.message}</p>}
                 </div>
 
-            </div>
+            </div>}
 
-            <div className='text-left mt-4'>
-            <label htmlFor="cv">CV (PDF only)<span className='text-red-500'>*</span></label>
-            <input
-                type="file"
-                accept="application/pdf"
-                {...register("cv", {
-                required: "please upload candidate cv",
-                validate: {
-                    isPdf: (value: FileList) =>
-                    value?.[0]?.type === "application/pdf" || "Only PDF files are allowed.",
-                    isUnder5MB: (value: FileList) =>
-                    value?.[0]?.size <= 5 * 1024 * 1024 || "File size must be under 5MB",
-                },
-                })}
-                className="input_primary auth_input"
-            />
-            {errors.cv && (
-                <p className="text-red-500 text-sm mt-1">{errors.cv.message}</p>
-            )}
-            </div>
-
+            {showFullForm &&
             <div className='text-left flex-1'>
-                <label htmlFor="">Any comments</label>
+                <label htmlFor="">Any comments (optional) </label>
                 <textarea 
-                placeholder='comments'
-                className="input_primary auth_input"
-                {...register("comments")}
+                  disabled={!isResumeValid}
+                  placeholder='Provide a brief comment'
+                  className="input_primary auth_input"
+                  {...register("comments")}
                 />
-            </div>
+            </div>}
 
+            {showFullForm &&
             <div className="flex justify-start mt-4">
               <button
               disabled = {isSubmitting} 
@@ -471,7 +678,7 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                 <SendIcon className='h-4 w-4'/>
                 {isSubmitting ? 'Submitting...' : 'Submit'}
               </button>
-            </div>
+            </div>}
           </form>
         </div>
         <DuplicateModal

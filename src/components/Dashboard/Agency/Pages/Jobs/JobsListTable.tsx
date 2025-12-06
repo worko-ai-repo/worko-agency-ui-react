@@ -9,6 +9,7 @@ import { AgencyJobsList } from "@Interfaces/AgencyDashboardList.dto";
 import UploadProfile from "./modals/UploadProfile";
 import { DynamicTableTwo } from "@Components/Shared/DynamicTableTwo";
 import DuplicateUploadProfileCheck from "./modals/DuplicateUploadProfileCheck";
+import { duplicate_profile } from "@AssetsFolder/assets";
 
 
 export const getCvViewDate = (statusTracker: any[]) => {
@@ -52,6 +53,7 @@ export default function JobsListTable(props: any) {
     currentPage,
     onPageChange,
     onPageSizeChange,
+    localUpdate
   } = props as any;
 
   // State required for table interactions
@@ -75,7 +77,7 @@ export default function JobsListTable(props: any) {
   const keyFallbacks = {
     companyName: ["jobDetails.companyName"],
     profile: ["jobDetails.jobTitle"],
-    yoe: ["jobDetails.experienceRange.max", "jobDetails.experienceRange.min"],
+    yoe: ["jobDetails.experienceRange.min", "jobDetails.experienceRange.max"],
     experience: ["jobDetails.experienceRange.max", "jobDetails.experienceRange.min"],
     salaryRange: ["jobDetails.salaryRange.min", "jobDetails.salaryRange.max"],
     location: ["jobDetails.location.fullLocation"],
@@ -186,7 +188,7 @@ const columns = [
         ),
     },
     {
-        key: "YOERange",
+        key: "yoe",
         label: "YOE range",
         sortable: true,
         render: (row: AgencyJobsList) => (
@@ -210,8 +212,12 @@ const columns = [
         label: "Location",
         sortable: true,
         render: (row: AgencyJobsList) => (
-            <div className='flex justify-center m-auto w-[150px]'>
-                <span>{row?.jobDetails?.location?.fullLocation ?? "NA"}</span>
+            <div className='flex justify-center m-auto w-[100px] text-center'>
+                <span 
+                  title={row?.jobDetails?.location?.fullLocation[0]}
+                  className="truncate block w-full">
+                  {row?.jobDetails?.location?.fullLocation ?? "NA"}
+                </span>
             </div>
         ),
     },
@@ -244,29 +250,28 @@ const columns = [
     {
         key: "uploadProfile",
         label: "Upload Profile",
-        sortable: true,
-        contentWidth: `max-w-none`,
+        sortable: false,
         render: (row: AgencyJobsList) => (
-            <div className='flex justify-center m-auto'>
+            <div className='flex justify-center m-auto w-[120px]'>
                 <button 
                 title="upload new profile"
                 onClick={()=>{
                   setSelectedRow(row)
                   setIsProfileUploadModalOpen(true)
                 }}
-                className="mx-1 bg-blue-500 p-3 text-white rounded-xl flex flex-row gap-1 justify-center items-center">
-                    <Upload/>
-                    Upload profile
+                className="flex-none inline-flex items-center justify-center gap-1 h-9 rounded-lg px-3 text-xs transition shadow-md mx-1 bg-blue-500 p-3 text-white flex-row">
+                    <Upload className="h-4 w-4"/>
+                    {/* Upload profile */}
                 </button>
                 <button
                 title="check duplicate profile"
-                className="mx-1 bg-green-500 p-3 text-white rounded-xl flex flex-row gap-1 justify-center items-center"
+                className="flex-none inline-flex items-center justify-center gap-2 h-9 rounded-lg p-2 text-xs transition bg-white text-white border-2"
                 onClick={()=>{
                   setSelectedRow(row)
                   setCheckIsDuplicate(true)
                 }}
                 >
-                  <CopyCheck/>
+                  <img src={duplicate_profile} alt="" className="h-6 w-6"/>
                 </button>
             </div>
         ),
@@ -278,7 +283,7 @@ const columns = [
         sortable: true,
         render: (row: AgencyJobsList) => (
             <div className='flex justify-center m-auto'>
-                <span>{row?.candidatesUploaded ?? "NA"}</span>
+                <span>{row?.totalCandidatesUploaded ?? "-"}</span>
             </div>
         ),
     },
@@ -289,7 +294,7 @@ const columns = [
         sortable: true,
         render: (row: AgencyJobsList) => (
             <div className='flex justify-center m-auto'>
-                <span>{row?.candidatesRejected ?? "NA"}</span>
+                <span>{row?.candidatesRejected ?? "-"}</span>
             </div>
         ),
     },
@@ -300,7 +305,7 @@ const columns = [
         sortable: true,
         render: (row: AgencyJobsList) => (
             <div className='flex justify-center m-auto'>
-                <span>{row?.candidatesInProcess ?? "NA"}</span>
+                <span>{row?.candidatesInProcess ?? "-"}</span>
             </div>
         ),
     },
@@ -387,6 +392,7 @@ const columns = [
         onClose= {()=>setIsProfileUploadModalOpen(false)}
         isOpen={isProfileUploadModalOpen}
         rowData={selectedRow}
+        localUpdate={localUpdate}
         />
         <DuplicateUploadProfileCheck
         dashboardType={"AGENCY"}

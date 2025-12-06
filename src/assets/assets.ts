@@ -130,6 +130,7 @@ import filter_white from "./svgs/filter_white.svg"
 import lightning_white from "./svgs/lightning_white.svg"
 import time_white from "./svgs/time_white.svg"
 import film from "./svgs/film.svg"
+import duplicate_profile from './svgs/duplicate_profile.svg';
 export { 
     // Backgrounds
     bg_plexus,
@@ -253,4 +254,5 @@ export {
     lightning_white,
     time_white,
     film,
+    duplicate_profile,
 };

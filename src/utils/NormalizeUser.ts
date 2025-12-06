@@ -38,11 +38,10 @@ export interface NormalizedUser {
   createdAt: string;
 }
 export function normalizeUserData(raw: Partial<CorporateUserDetail | AuthLoginForGeneralUserDto>): NormalizedUser {
-   const isCorporate = "cognitoUserId" in raw;
-
+  const isCorporate = "cognitoUserId" in raw;
   let fullName: string;
   if (isCorporate) {
-    fullName = [raw.firstName?.trim() ?? "", raw.lastName?.trim() ?? ""].filter(Boolean).join(" ") || "Corporate User";
+    fullName = raw.name?.trim() || "Agency User";
   } else {
     fullName = raw.name?.trim() ?? "User";
   }

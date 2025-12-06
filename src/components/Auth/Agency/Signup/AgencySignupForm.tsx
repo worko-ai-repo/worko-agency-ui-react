@@ -1,3 +1,4 @@
+import { logo_text } from "@AssetsFolder/assets";
 import TermsAndConditionsAgency from "./TermsAndConditionsAgency";
 import MessageModal from "@Components/Modals/MessageModal";
 import MessageModalTermsAndCondidtions from "@Components/Modals/MessageModalTermsAndCondidtions";
@@ -124,8 +125,12 @@ const AgencySignupForm = ({
 
   
   return (
+  <div>
+    <div className="flex justify-center items-center">
+      <img src={logo_text} alt="Worko Logo" className="w-32 h-auto" />
+    </div>
     <form onSubmit={handleSubmit(isOtpSent ? onVerifyOtp : onSendOtp)} className="w-full">
-      <p className="font-semibold text-gray-700 text-2xl text-center ">Agency Signup </p>
+      <p className="font-semibold text-gray-700 text-2xl text-center">Agency Signup </p>
       <div className="mainForm min-w-full grid sm:grid-cols-[repeat(2,_minmax(300px,_350px))] grid-row-[min-content]  gap-4 w-full px-2 sm:px-3 md:py-6 rounded-2xl mx-auto sm:py-2 min-h-[350px] ">
         <div>
           <label className="block font-medium">Full name</label>
@@ -269,20 +274,28 @@ const AgencySignupForm = ({
           </div>
         )}
 
-      <div className="flex gap-2  mt-5 text-xs items-center justify-center  ">
-        <input
-          disabled={isOtpSent}
-          type="checkbox"
-          {...register("termsAndConditions", validationRules.termsAndConditions)}
-          checked={watch("termsAndConditions")}
-        />
-        <p
-          className="block md:w-auto text-sm sm:text-md text-left font-medium cursor-pointer"
-          onClick={() => !isOtpSent && setViewTerms(true)}
-          >
-          I accept the <span className="text-blue-500 cursor-pointer">Terms and Conditions</span>
-        </p>
+      <div className="flex flex-col gap-1 mt-2 text-xs items-center justify-center  ">
+        <div className="flex gap-2 text-xs items-center justify-center">
+          <input
+            disabled={isOtpSent}
+            type="checkbox"
+            {...register("termsAndConditions", validationRules.termsAndConditions)}
+            checked={watch("termsAndConditions")}
+          />
+          <p
+            className="block md:w-auto text-sm sm:text-md text-left font-medium cursor-pointer"
+            onClick={() => !isOtpSent && setViewTerms(true)}
+            >
+            I accept the <span className="text-blue-500 cursor-pointer">Terms and Conditions</span>
+          </p>
+        </div>
+        <div>
+          <p className="text-sm text-red-500">
+              {errors.termsAndConditions?.message}
+          </p>
+        </div>
       </div>
+      <br />
         {ViewTerms && (
           <MessageModalTermsAndCondidtions
             type="none"
@@ -317,6 +330,7 @@ const AgencySignupForm = ({
         {isOtpSent ? "Create Account" : "Verify Account"}
       </button>
     </form>
+  </div>
   );
 };
 

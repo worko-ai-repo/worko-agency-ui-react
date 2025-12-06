@@ -31,7 +31,6 @@ const AgencyLoginForm = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const agencyBaseUrl = import.meta.env.APP_PROXY_AGENCY_BASE
   const {userDetails} = useAppContext()
   // Form submission handler
   const onSubmit = async (data: any): Promise<void> => {
@@ -68,7 +67,7 @@ const AgencyLoginForm = () => {
           //   [Partial<CorporateUserDetail>]
           // >(`/user/${loginData.email}/details`, true, {});
           const session = await fetchAuthSession();
-          const { response,error } = await httpServiceObj.get<any>(`${agencyBaseUrl}/agency-user/${session.userSub}/cognito`, true, {}, true);
+          const { response,error } = await httpServiceObj.get<any>(`/agency-user/${session.userSub}/cognito`, true, {}, false, "BASE");
 
           if (error) {
             toast.error("Error: " + error, getToastOptions({ autoClose: false }));

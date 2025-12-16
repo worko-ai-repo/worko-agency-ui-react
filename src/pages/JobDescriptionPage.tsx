@@ -41,7 +41,7 @@ const JobJD = React.lazy(() => import("@Components/JobDescription/JobJD"));
 
 const fetchUserBasicDetails = async () => {
   const { response, error } = await httpServiceObj.get<UserBasicDetailsDto>(
-    `${import.meta.env.APP_API_URI}/user/basic-details`,
+    `${import.meta.env.APP_PROXY_AGENCY_BASE}/user/basic-details`,
     true,
     {},
     true
@@ -120,7 +120,7 @@ const JobDescription = () => {
     updatedAt: "",
     isTriggered: false,
   });
-  const APP_JOBS_API_URI = import.meta.env.APP_JOBS_API_URI;
+  const APP_PROXY_AGENCY_BASE = import.meta.env.APP_PROXY_AGENCY_BASE;
 
   const { data, isSuccess } = useQuery({
     queryKey: ["userBasicDetails"],
@@ -133,7 +133,7 @@ const JobDescription = () => {
       const { response: finalScoreData, error: finalScoreError } = await httpServiceObj.get<{
         initialMatchingScoreDetails: initialMatchingScoreDetails;
       }>(
-        `${APP_JOBS_API_URI}/job/${job?.id}/s3-vector`,
+        `${APP_PROXY_AGENCY_BASE}/job/${job?.id}/s3-vector`,
         true,
         {
           coreSkills: data?.coreSkills?.map((skill) => skill.skillName).join(",") || "",
@@ -256,7 +256,7 @@ const JobDescription = () => {
         data: JobApplicationExternalDto[] | JobApplicationInternalDto[];
         pagination: object;
       }>(
-        `${APP_JOBS_API_URI}/${
+        `${APP_PROXY_AGENCY_BASE}/${
           jobDataState?.externalJobId ? "external-" : ""
         }job-application/${jobid}/${userEmail}`,
         true,
@@ -505,7 +505,7 @@ const JobDescription = () => {
     queryKey: ["jobData", jobid],
     queryFn: async () => {
       const { response, error } = await httpServiceObj.get<JobDto>(
-        `${APP_JOBS_API_URI}/job/${jobid}`,
+        `${APP_PROXY_AGENCY_BASE}/job/${jobid}`,
         true,
         {},
         true
@@ -583,8 +583,8 @@ const JobDescription = () => {
       }
 
       const constructUrl = jobDataState?.externalJobId
-        ? `${APP_JOBS_API_URI}/external-job-application/`
-        : `${APP_JOBS_API_URI}/job-application/`;
+        ? `${APP_PROXY_AGENCY_BASE}/external-job-application/`
+        : `${APP_PROXY_AGENCY_BASE}/job-application/`;
 
       const result = (await toast.promise(
         httpServiceObj.post(constructUrl, payload, true, {}, true),

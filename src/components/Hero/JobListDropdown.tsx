@@ -23,7 +23,7 @@ const fetchJobs = async (search: string, dashboard: "CORPORATE" | "ADMIN" = "COR
   try {
     const userCognitoDetails = secureStorage.getItem<any>(SecureStorageKeyEnum.COGNITOUSERDETAILS);
     const userType = userCognitoDetails?.["cognito:groups"]?.[0];
-    const uri = import.meta.env.APP_JOBS_API_URI || "https://jobs.worko.ai";
+    const uri = import.meta.env.APP_PROXY_AGENCY_BASE || "https://jobs.worko.ai";
     const payload = {
       pageSize: 25,
       sortOrder: "desc",

@@ -23,8 +23,8 @@ import {
 import { BulkJdParsedData } from "@Components/Dashboard/Agency/Pages/BulkCVCheck/BulkCvCheck";
 import { AgencyListDetailsDto } from "@Interfaces/AgencyDatabaseApplicantDetailsDto";
 
-const workoBaseApi = import.meta.env.APP_API_URI_WORKO_BASE
-const workoJobApi = import.meta.env.APP_API_URI_WORKO_JOB
+const workoBaseApi = import.meta.env.APP_API_URI
+const workoJobApi = import.meta.env.APP_JOBS_API_URI
 /**
  * Corporate Service File
  *

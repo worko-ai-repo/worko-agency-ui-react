@@ -15,10 +15,10 @@ export interface JobDescriptionSubComponentDTO {
 }
 
 const CheckCSpresence = async (jobData: JobDto): Promise<JobDto | undefined> => {
-  const APP_JOBS_API_URI = import.meta.env.APP_JOBS_API_URI;
+  const APP_PROXY_AGENCY_BASE = import.meta.env.APP_PROXY_AGENCY_BASE;
   try {
     const { response, error } = await httpServiceObj.post<JobDto>(
-      `${APP_JOBS_API_URI}/job/parsejd`,
+      `${APP_PROXY_AGENCY_BASE}/job/parsejd`,
       {
         jobDescription: jobData.jobDescription,
       },
@@ -89,7 +89,7 @@ const CheckCSpresence = async (jobData: JobDto): Promise<JobDto | undefined> => 
       // console.log('Formatted Payload:', requestPayload);
 
       const { response: putResponse, error } = await httpServiceObj.put<JobDto>(
-        `${APP_JOBS_API_URI}/job/${jobData.id}`,
+        `${APP_PROXY_AGENCY_BASE}/job/${jobData.id}`,
         requestPayload,
         true,
         {},

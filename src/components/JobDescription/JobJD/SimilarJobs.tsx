@@ -56,7 +56,7 @@ const JobCard: React.FC<JobCardProps> = ({ job, onApply }) => {
     });
   };
 
-  const finalLogoUrl = job?.companyDetails?.logo ? `${import.meta.env.APP_WORKO_BASE_URL}/images/${job?.companyDetails?.logo}` : job?.companyDetails?.logoUrl;
+  const finalLogoUrl = job?.companyDetails?.logo ? `${import.meta.env.APP_PROXY_AGENCY_BASE}/images/${job?.companyDetails?.logo}` : job?.companyDetails?.logoUrl;
 
   const companyLogoUrl = job?.externalJobId ? job?.companyLogoUrl : finalLogoUrl;
 

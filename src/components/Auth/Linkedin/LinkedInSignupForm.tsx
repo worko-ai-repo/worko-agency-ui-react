@@ -142,7 +142,7 @@ const LinkedInSignupForm: React.FC<LinkedInSignupForm> = ({
       if (retryCount === 0) setOpenReferralLoader(true);
 
       const { response, error } = await httpServiceObj.get<UserBasicDetailsDto>(
-        `${import.meta.env.APP_API_URI}/user/basic-details`,
+        `${import.meta.env.APP_PROXY_AGENCY_BASE}/user/basic-details`,
         true,
         {},
         true
@@ -172,7 +172,7 @@ const LinkedInSignupForm: React.FC<LinkedInSignupForm> = ({
       }
     } catch (error) {
       console.error("Error fetching user basic details:", error);
-      const params = import.meta.env.APP_WORKO_BASE_URL + "/jobs";
+      const params = import.meta.env.APP_PROXY_AGENCY_BASE + "/jobs";
       setModalData({
         type: "error",
         heading: { message: "Something Went Wrong", type: "error" },

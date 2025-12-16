@@ -86,7 +86,7 @@ const UpdateResumeModal = ({ onClose }: { onClose: () => void }) => {
       }
 
       const { response, error } = await httpServiceObj.get<UserBasicDetailsDto>(
-        `${import.meta.env.APP_API_URI}/user/basic-details`,
+        `${import.meta.env.APP_PROXY_AGENCY_BASE}/user/basic-details`,
         true,
         {},
         true

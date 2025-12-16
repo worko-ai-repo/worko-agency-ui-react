@@ -65,8 +65,8 @@ export const CompanyProvider = ({ children }: ContextProviderProps) => {
   const [defaultCoreSkills, setDefaultCoreSkills] = useState<string[] | undefined>([]);
   const pagesCountRef = useRef<number>(0);
 
-  const APP_JOBS_API_URI = import.meta.env.APP_JOBS_API_URI;
-  const APP_API_URI = import.meta.env.APP_API_URI;
+  const APP_PROXY_AGENCY_BASE = import.meta.env.APP_PROXY_AGENCY_BASE;
+  // const APP_PROXY_AGENCY_BASE = import.meta.env.APP_PROXY_AGENCY_BASE;
 
   const [jobFilters, setJobFilters] = useState<JobFiltersDto>({
     pageSize: 10,
@@ -152,7 +152,7 @@ export const CompanyProvider = ({ children }: ContextProviderProps) => {
     setIsUserDetailsLoading(true);
     try {
       const { response, error } = await httpServiceObj.get<UserBasicDetailsDto>(
-        `${APP_API_URI}/user/basic-details`,
+        `${APP_PROXY_AGENCY_BASE}/user/basic-details`,
         true,
         {},
         true
@@ -517,7 +517,7 @@ export const CompanyProvider = ({ children }: ContextProviderProps) => {
           }
         }
       });
-      const apiUrl = isJobPage ? `${APP_JOBS_API_URI}/job/` : "/company";
+      const apiUrl = isJobPage ? `${APP_PROXY_AGENCY_BASE}/job/` : "/company";
       try {
         const { response, error } = await httpServiceObj.get<
           typeof isJobPage extends true ? GlobalApiQueryResponseDto<JobDto> : any

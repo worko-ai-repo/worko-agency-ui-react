@@ -24,8 +24,8 @@ export class HttpService {
 
 	constructor() {
 	  this.API_URI = {
-		  ["BASE"]: import.meta.env.APP_API_URI,
-		  ["JOB"]: import.meta.env.APP_JOBS_API_URI,
+		  ["BASE"]: import.meta.env.APP_PROXY_AGENCY_BASE,
+		  ["JOB"]: import.meta.env.APP_PROXY_AGENCY_BASE,
 	  };
 	}
 

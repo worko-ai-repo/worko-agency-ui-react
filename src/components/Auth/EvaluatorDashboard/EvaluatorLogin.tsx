@@ -63,7 +63,7 @@ const EvaluatorLogin: React.FC = () => {
 //     // Configure Cognito for evaluator authentication
 //     CognitoServiceObj.configureForEvaluator({
 //       //@todo remove this line
-//       userPoolId: import.meta.env.APP_COGNITO_USER_POOL_ID,
+//       userPoolId: import.meta.env.APP_AGENCY_COGNITO_USER_POOL_ID,
 //       userPoolClientId: import.meta.env.APP_EVALUATOR_USER_POOL_CLIENT_ID
 //     });
 //     initializeAuth();
@@ -149,7 +149,7 @@ useEffect(() => {
 
       // Step 5: Configure Cognito and initialize authentication
       PasswordlessAuthService.configureForEvaluator({
-        userPoolId: import.meta.env.APP_COGNITO_USER_POOL_ID,
+        userPoolId: import.meta.env.APP_AGENCY_COGNITO_USER_POOL_ID,
         userPoolClientId: import.meta.env.APP_EVALUATOR_USER_POOL_CLIENT_ID
       });
 

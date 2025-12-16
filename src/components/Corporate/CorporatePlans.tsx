@@ -49,7 +49,7 @@ function CorporatePlans() {
       ],
       button: 'Try Now',
       buttonStyle: 'bg-gray-900 hover:bg-gray-800 text-white',
-      buttonLink: `${import.meta.env.APP_WORKO_BASE_URL}/corporate/connect-with-us?plan=Job%20Board`,
+      buttonLink: `${import.meta.env.APP_PROXY_AGENCY_BASE}/corporate/connect-with-us?plan=Job%20Board`,
     },
     {
       title: 'Hiring Co-Pilot',
@@ -88,7 +88,7 @@ function CorporatePlans() {
       ],
       button: 'Try Now',
       buttonStyle: 'bg-blue-600 hover:bg-blue-700 text-white',
-      buttonLink: `${import.meta.env.APP_WORKO_BASE_URL}/corporate/connect-with-us?plan=Co-Pilot`,
+      buttonLink: `${import.meta.env.APP_PROXY_AGENCY_BASE}/corporate/connect-with-us?plan=Co-Pilot`,
       popular: true,
     },
     {
@@ -124,7 +124,7 @@ function CorporatePlans() {
       ],
       button: 'Try Now',
       buttonStyle: 'bg-gray-900 hover:bg-gray-800 text-white',
-      buttonLink: `${import.meta.env.APP_WORKO_BASE_URL}/corporate/connect-with-us?plan=Hiring%20Partner`,
+      buttonLink: `${import.meta.env.APP_PROXY_AGENCY_BASE}/corporate/connect-with-us?plan=Hiring%20Partner`,
     },
   ];
 

@@ -46,7 +46,7 @@ const LatestJobOpportunities: React.FC<LatestJobOpportunitiesProps> = ({
   const [failedCategoryLogos, setFailedCategoryLogos] = useState<Record<string, boolean>>({});
   const [failedJobLogos, setFailedJobLogos] = useState<Record<string, boolean>>({});
   const scrollRef = useRef<HTMLDivElement>(null);
-  const uri = import.meta.env.APP_JOBS_API_URI || "https://jobs.worko.ai";
+  const uri = import.meta.env.APP_PROXY_AGENCY_BASE || "https://jobs.worko.ai";
   const filters = {
     pageSize: 25,
     sortOrder: "desc",
@@ -71,7 +71,7 @@ const LatestJobOpportunities: React.FC<LatestJobOpportunitiesProps> = ({
       return (
         response?.data.map((job) => {
           const finalLogoUrl = job?.logo
-            ? `${import.meta.env.APP_WORKO_BASE_URL}/images/${job?.companyDetails?.logo}`
+            ? `${import.meta.env.APP_PROXY_AGENCY_BASE}/images/${job?.companyDetails?.logo}`
             : job?.companyDetails?.logoUrl;
           const jobType = job.typeofEmployment ? job.typeofEmployment.replace(/_/g, " ") : "N/A";
           const companyLogoUrl = job?.externalJobId ? job?.companyLogoUrl : finalLogoUrl;

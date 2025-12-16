@@ -139,7 +139,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     setUserName(fullName.length > 0 ? fullName[0] : "User");
   }, [finalUserDetails]);
 
-  const finalLogoUrl = `${import.meta.env.APP_WORKO_BASE_URL}/images/${
+  const finalLogoUrl = `${import.meta.env.APP_PROXY_AGENCY_BASE}/images/${
     finalUserDetails?.profileImageAwsS3SignedUrl
   }`;
 

@@ -155,7 +155,7 @@ export const JobCard = ({ job }: any) => {
 
     try {
       const result = (await toast.promise(
-        httpServiceObj.post(`${import.meta.env.APP_JOBS_API_URI}/refer-and-earn`, payload, true, {}, true),
+        httpServiceObj.post(`${import.meta.env.APP_PROXY_AGENCY_BASE}/refer-and-earn`, payload, true, {}, true),
         {
           pending: "Sharing job...",
         },

@@ -124,8 +124,8 @@ APP_NAME=XYZ npm run dev
 
 ```env
 APP_API_URL=https://api.dev.example.com
-APP_COGNITO_USER_POOL_ID=ap-south-1xxGrexxKkNc
-APP_COGNITO_CLIENT_ID=16sh5sxxxxxxxxxxfdm8gtp0e4
+APP_AGENCY_COGNITO_USER_POOL_ID=ap-south-1xxGrexxKkNc
+APP_AGENCY_COGNITO_CLIENT_ID=16sh5sxxxxxxxxxxfdm8gtp0e4
 APP_NEW_FEATURE_ENABLED=true
 ```
 
@@ -133,8 +133,8 @@ APP_NEW_FEATURE_ENABLED=true
 
 ```env
 APP_API_URL=https://api.staging.example.com
-APP_COGNITO_USER_POOL_ID=ap-south-1_yhgt56pln
-APP_COGNITO_CLIENT_ID=09h4lkjrt8bc5pl0mf2ds7xjz
+APP_AGENCY_COGNITO_USER_POOL_ID=ap-south-1_yhgt56pln
+APP_AGENCY_COGNITO_CLIENT_ID=09h4lkjrt8bc5pl0mf2ds7xjz
 APP_NEW_FEATURE_ENABLED=true
 ```
 
@@ -142,8 +142,8 @@ APP_NEW_FEATURE_ENABLED=true
 
 ```env
 APP_API_URL=https://api.example.com
-APP_COGNITO_USER_POOL_ID=ap-south-1_1f9O34ojY
-APP_COGNITO_CLIENT_ID=7ul99pqf5uflpl2ckvukklc6c3
+APP_AGENCY_COGNITO_USER_POOL_ID=ap-south-1_1f9O34ojY
+APP_AGENCY_COGNITO_CLIENT_ID=7ul99pqf5uflpl2ckvukklc6c3
 APP_NEW_FEATURE_ENABLED=false
 ```
 

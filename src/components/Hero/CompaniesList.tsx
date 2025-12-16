@@ -62,7 +62,7 @@ const CompaniesList = () => {
 	const CompanyCard = ({ company }: { company: any }) => {
 		const [imgError, setImgError] = React.useState(false); // State per image
 
-		const finalLogoUrl = company?.logo ? `${import.meta.env.APP_WORKO_BASE_URL}/images/${company?.logo}` : company?.logoUrl;
+		const finalLogoUrl = company?.logo ? `${import.meta.env.APP_PROXY_AGENCY_BASE}/images/${company?.logo}` : company?.logoUrl;
 
 		return (
 			<div className="w-[250px] mx-4 relative group h-full border-1 border-white cursor-pointer" onClick={() => (window.location.href = `/jobs`)}>

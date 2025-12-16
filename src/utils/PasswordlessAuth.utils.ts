@@ -12,7 +12,7 @@ import { SecureStorageKeyEnum } from '@Enums/SecureStorage.enum';
 const evaluatorAmplifyConfig = {
     Auth: {
         Cognito: {
-            userPoolId: import.meta.env.APP_COGNITO_USER_POOL_ID,
+            userPoolId: import.meta.env.APP_AGENCY_COGNITO_USER_POOL_ID,
             userPoolClientId: import.meta.env.APP_EVALUATOR_USER_POOL_CLIENT_ID,
         }
     }

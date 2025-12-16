@@ -43,7 +43,7 @@ const Signup = () => {
   // Remove initialFrame variable
   // let initialFrame: SignupMode = 'CAND'; // Default to 'CAND'
   const [currStep, setCurrStep] = useState<0 | 1 | 2 | 3 | 4>(0); // Current step of the loader
-  const APP_API_URI = import.meta.env.APP_API_URI;
+  const APP_PROXY_AGENCY_BASE = import.meta.env.APP_PROXY_AGENCY_BASE;
 
   // Set activeFrame from URL param on mount
   const getInitialFrame = () => {
@@ -282,7 +282,7 @@ const Signup = () => {
             setOpenReferralLoader(true);
           }
           const { response, error } = await httpServiceObj.get<UserBasicDetailsDto>(
-            `${APP_API_URI}/user/basic-details`,
+            `${APP_PROXY_AGENCY_BASE}/user/basic-details`,
             true,
             {},
             true
@@ -320,7 +320,7 @@ const Signup = () => {
         }
       } catch (error) {
         console.error("Error fetching user basic details:", error);
-        const params = import.meta.env.APP_WORKO_BASE_URL + "/jobs";
+        const params = import.meta.env.APP_PROXY_AGENCY_BASE + "/jobs";
         setModalData({
           type: "error",
           heading: { message: "Something Went Wrong", type: "error" },

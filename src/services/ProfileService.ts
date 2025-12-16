@@ -2,7 +2,7 @@ import httpServiceObj from "@Services/ApiHandler.service";
 import secureStorage from "@Utils/SecureStorage.utils";
 import { SecureStorageKeyEnum } from "@Enums/SecureStorage.enum";
 
-const APP_API_URI = import.meta.env.APP_API_URI || '';
+const APP_PROXY_AGENCY_BASE = import.meta.env.APP_PROXY_AGENCY_BASE || '';
 
 // Data entity types for API calls
 export type DataEntity = 'profile' | 'details' | 'education' | 'experience' | 'skills' | 'achievement' | 'subscription' | 'socialprofile' | 'preference' | 'multipleCandidateExperience';
@@ -40,9 +40,9 @@ class ProfileService {
 
     const endpoint = entity === 'skills' ? 'Skill' : entity;
     // const url = entity === 'preference'
-    //   ? `${APP_API_URI}/user/${endpoint}/${email}`
-    //   : `${APP_API_URI}/user/${email}/${endpoint}`;
-    const url = `${APP_API_URI}/user/${email}/${endpoint}`
+    //   ? `${APP_PROXY_AGENCY_BASE}/user/${endpoint}/${email}`
+    //   : `${APP_PROXY_AGENCY_BASE}/user/${email}/${endpoint}`;
+    const url = `${APP_PROXY_AGENCY_BASE}/user/${email}/${endpoint}`
 
     try {
       const { response } = await httpServiceObj.get(`${url}`, true, {}, true);
@@ -109,8 +109,8 @@ async fetchAllUserData(email: string): Promise<Record<DataEntity, any>> {
     
   //   // backend api changed so condition statement has been used
   //   const url = entity === 'preference'
-  //     ? `${APP_API_URI}/user/${endpoint}/${email}`   
-  //     : `${APP_API_URI}/user/${email}/${endpoint}`; 
+  //     ? `${APP_PROXY_AGENCY_BASE}/user/${endpoint}/${email}`   
+  //     : `${APP_PROXY_AGENCY_BASE}/user/${email}/${endpoint}`; 
 
   //   const { response, error } = await httpServiceObj.get(
   //     `${url}`, 
@@ -173,15 +173,15 @@ async fetchAllUserData(email: string): Promise<Record<DataEntity, any>> {
     try {
       // Handle the special case for skills endpoint
       const endpoint = entity === 'skills' ? 'Skill' : entity;
-      const url = `${APP_API_URI}/user/${email}/${endpoint}`
+      const url = `${APP_PROXY_AGENCY_BASE}/user/${email}/${endpoint}`
       // const url = entity === 'preference'
-      // ? `${APP_API_URI}/user/${endpoint}/${email}`   
-      // : `${APP_API_URI}/user/${email}/${endpoint}`;
+      // ? `${APP_PROXY_AGENCY_BASE}/user/${endpoint}/${email}`   
+      // : `${APP_PROXY_AGENCY_BASE}/user/${email}/${endpoint}`;
 
       // console.log(email, entity,data,method,url)
       if(entity === 'preference' && method === "POST"){
         const { response, error } = await httpServiceObj[method.toLowerCase() as 'post'](
-          `${APP_API_URI}/user/${endpoint}/`, 
+          `${APP_PROXY_AGENCY_BASE}/user/${endpoint}/`, 
           data,
           true, 
           {}, 

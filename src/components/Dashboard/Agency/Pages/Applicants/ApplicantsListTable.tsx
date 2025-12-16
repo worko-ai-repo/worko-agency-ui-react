@@ -150,7 +150,7 @@ export default function ApplicantsListTable(props: any) {
         location: ["candidateParsedCvDetails.location"],
         readyToRelocate: ["candidateParsedCvDetails.readyToRelocate"],
         anyComment: ["agencyComments"],
-        status: ["jobDetails.status"]
+        status: ["jobApplicationStatus"]
     };
 
 //   const { sortedData, onSortChange } = useSortableData(data as any, keyFallbacks);

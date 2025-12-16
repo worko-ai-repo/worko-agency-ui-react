@@ -17,7 +17,7 @@ const JobJD: React.FC<JobDescriptionSubComponentDTO> = ({
   const [similarJobs, setSimilarJobs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
-  const APP_JOBS_API_URI = import.meta.env.APP_JOBS_API_URI;
+  const APP_API_URI = import.meta.env.APP_API_URI;
 
   useEffect(() => {
     const fetchSimilarJobs = async () => {
@@ -26,7 +26,7 @@ const JobJD: React.FC<JobDescriptionSubComponentDTO> = ({
         try {
           // First try to fetch similar jobs from the similar-jobs endpoint
           const { response, error: similarJobsError } = await httpServiceObj.get(
-            `${APP_JOBS_API_URI}/job/`,
+            `${APP_API_URI}/job/`,
             true,
             {
               jobTitle: jobData.jobTitle,

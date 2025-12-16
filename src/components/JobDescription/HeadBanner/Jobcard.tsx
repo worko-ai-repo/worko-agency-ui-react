@@ -303,7 +303,7 @@ const JobCard: React.FC<JobCardProps> = ({
     try {
       const result = (await toast.promise(
         httpServiceObj.post(
-          `${import.meta.env.APP_JOBS_API_URI}/refer-and-earn`,
+          `${import.meta.env.APP_API_URI}/refer-and-earn`,
           requestData,
           true,
           {},
@@ -349,7 +349,7 @@ const JobCard: React.FC<JobCardProps> = ({
   const titleCaseDepartment = toTitleCase(jobData?.department || "");
   const titleCaseLocation = toTitleCase(jobData?.location?.fullLocation?.join(", ") || "");
   const finalLogoUrl = jobData?.companyDetails?.logo
-    ? `${import.meta.env.APP_WORKO_BASE_URL}/images/${jobData?.companyDetails?.logo}`
+    ? `${import.meta.env.APP_API_URI}/images/${jobData?.companyDetails?.logo}`
     : jobData?.companyDetails?.logoUrl;
 
   const companyLogoUrl = jobData?.externalJobId ? jobData?.companyLogoUrl : finalLogoUrl;

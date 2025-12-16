@@ -44,7 +44,7 @@ export default function SmoothHeroIntro() {
   const containerRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [imgError, setImgError] = useState(false);
-  const uri = import.meta.env.APP_JOBS_API_URI || "https://jobs.worko.ai";
+  const uri = import.meta.env.APP_API_URI || "https://jobs.worko.ai";
 
   // --- Floating animation ---
   useEffect(() => {

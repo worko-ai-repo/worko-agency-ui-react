@@ -172,7 +172,7 @@ const LinkedInSignupForm: React.FC<LinkedInSignupForm> = ({
       }
     } catch (error) {
       console.error("Error fetching user basic details:", error);
-      const params = import.meta.env.APP_WORKO_BASE_URL + "/jobs";
+      const params = import.meta.env.APP_API_URI + "/jobs";
       setModalData({
         type: "error",
         heading: { message: "Something Went Wrong", type: "error" },

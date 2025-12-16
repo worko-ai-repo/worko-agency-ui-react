@@ -214,7 +214,7 @@ const CompanyJobContent = () => {
                     ? "Not Disclosed"
                     : job?.location?.fullLocation.join(", ");
                   const finalLogoUrl = job?.companyDetails?.logo
-                    ? `${import.meta.env.APP_WORKO_BASE_URL}/images/${job?.companyDetails?.logo}`
+                    ? `${import.meta.env.APP_API_URI}/images/${job?.companyDetails?.logo}`
                     : job?.companyDetails?.logoUrl;
 
                   const companyLogoUrl = job?.externalJobId ? job?.companyLogoUrl : finalLogoUrl;

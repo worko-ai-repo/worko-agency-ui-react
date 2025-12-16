@@ -65,7 +65,6 @@ export const CompanyProvider = ({ children }: ContextProviderProps) => {
   const [defaultCoreSkills, setDefaultCoreSkills] = useState<string[] | undefined>([]);
   const pagesCountRef = useRef<number>(0);
 
-  const APP_JOBS_API_URI = import.meta.env.APP_JOBS_API_URI;
   const APP_API_URI = import.meta.env.APP_API_URI;
 
   const [jobFilters, setJobFilters] = useState<JobFiltersDto>({
@@ -517,7 +516,7 @@ export const CompanyProvider = ({ children }: ContextProviderProps) => {
           }
         }
       });
-      const apiUrl = isJobPage ? `${APP_JOBS_API_URI}/job/` : "/company";
+      const apiUrl = isJobPage ? `${APP_API_URI}/job/` : "/company";
       try {
         const { response, error } = await httpServiceObj.get<
           typeof isJobPage extends true ? GlobalApiQueryResponseDto<JobDto> : any

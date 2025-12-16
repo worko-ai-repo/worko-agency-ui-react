@@ -1,6 +1,6 @@
 import httpServiceObj from '@Services/ApiHandler.service';
 
-const JOB_BASE_URL = import.meta.env.APP_JOBS_API_URI || '';
+const JOB_BASE_URL = import.meta.env.APP_API_URI || '';
 const EVALUATOR_DETAIL_URL = `${JOB_BASE_URL}/evaluator-detail/`;
 
 export interface RegisterEvaluatorPayload {

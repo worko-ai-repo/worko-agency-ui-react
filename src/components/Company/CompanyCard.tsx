@@ -13,7 +13,7 @@ const CompanyCard = ({ companyData }: { companyData: CompanyShortDto }) => {
 		nav(`/${type}/${companyName}/${companyData.SK}`);
 	};
 	const finalLogoUrl = companyData?.logo 
-	? `${import.meta.env.APP_WORKO_BASE_URL}/images/${companyData.logo}` 
+	? `${import.meta.env.APP_API_URI}/images/${companyData.logo}` 
 	: companyData?.logoUrl;
 
   const isLogoAvailable = finalLogoUrl && finalLogoUrl.trim() !== "";

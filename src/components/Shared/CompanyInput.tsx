@@ -82,7 +82,7 @@ export default function CompanyInput({ errors, setValue, clearErrors, setCompany
 	}) {
 		const [imgError, setImgError] = React.useState(false);
 		const finalLogoUrl = company?.logo
-			? `${import.meta.env.APP_WORKO_BASE_URL}/images/${company.logo}`
+			? `${import.meta.env.APP_API_URI}/images/${company.logo}`
 			: company?.logoUrl;
 
 		if (finalLogoUrl && !imgError) {

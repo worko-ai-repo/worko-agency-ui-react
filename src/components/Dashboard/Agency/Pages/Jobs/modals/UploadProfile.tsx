@@ -266,7 +266,7 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
           }
           const uploadResponse:any = await uploadingProfileWithAllFields(payload);
           if (!uploadResponse.success) {
-            console.log(uploadResponse.data)
+            // console.log(uploadResponse.data)
             // setIsDuplicateModal(true)
             toast.error(uploadResponse.data.message, getToastOptions({}));
             return; 

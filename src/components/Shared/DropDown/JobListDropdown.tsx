@@ -61,10 +61,10 @@ const JobListDropdown: React.FC<JobListDropdownProps> = ({
     enabled: !!userDetails?.email,
     staleTime: 5 * 60 * 1000,
   });
-  useEffect(()=>{
-    console.log(userDetails)
-    console.log(jobs)
-  },[jobs])
+  // useEffect(()=>{
+  //   console.log(userDetails)
+  //   console.log(jobs)
+  // },[jobs])
   const handleSelectJob = (job: DropDownSelectedJobData) => {
     setSearchText(job.jobTitle);
     setDropdownVisible(false);

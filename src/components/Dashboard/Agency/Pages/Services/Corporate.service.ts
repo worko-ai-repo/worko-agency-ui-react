@@ -612,7 +612,7 @@ class CorporateService {
         params,
         false,
       );
-      console.log(response)
+      // console.log(response)
       if (response) return response;
       throw new Error("Empty response");
     } catch (error: any) {

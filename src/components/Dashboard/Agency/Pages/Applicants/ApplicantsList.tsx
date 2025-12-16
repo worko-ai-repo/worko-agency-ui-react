@@ -95,7 +95,7 @@ const ApplicantsList = () => {
       
             if (response) {
               setFetchData(response.data);
-              console.log(response)
+              // console.log(response)
               if (response.pagination) {
                 setPaginationInfo(response.pagination);
       
@@ -179,7 +179,7 @@ const ApplicantsList = () => {
     }, [userDetails])
 
   useEffect(() => {
-    console.log(userDetails)
+    // console.log(userDetails)
       if (userDetails?.email) {
         setCurrentPage(1);
         setPaginationInfo((prev) => ({ ...prev, lastKey: "" }));

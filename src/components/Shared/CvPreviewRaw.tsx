@@ -11,9 +11,7 @@ interface CVPreviewRawProps {
 }
 
 const CVPreviewRaw: React.FC<CVPreviewRawProps> = ({ pdfUrl, onClose,heading,candidateFullDetails,showDownload,isContractCopy }) => {
-  useEffect(()=>{
-    console.log(candidateFullDetails)
-  },[])
+
   return (
     <div className="flex flex-col gap-4 p-4 relative">
       <div className="flex justify-between items-center">

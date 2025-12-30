@@ -17,7 +17,7 @@ import {fetchAuthSession} from "@aws-amplify/auth";
 const AgencyLoginForm = () => {
   const appHref = useCrossAppAuth();
   const navigate = useNavigate();
-  const { checkUserLoggedIn, setUpdateCheck, fetchAgencyDetails } = useAppContext();
+  const { checkUserLoggedIn, setUpdateCheck, fetchAgencyDetails,setUserDetails } = useAppContext();
   const {
     register,
     handleSubmit,
@@ -31,7 +31,7 @@ const AgencyLoginForm = () => {
   });
 
   const [showPassword, setShowPassword] = useState(false);
-  const {userDetails} = useAppContext()
+
   // Form submission handler
   const onSubmit = async (data: any): Promise<void> => {
     const loginData = {
@@ -68,7 +68,7 @@ const AgencyLoginForm = () => {
           // >(`/user/${loginData.email}/details`, true, {});
           const session = await fetchAuthSession();
           const { response,error } = await httpServiceObj.get<any>(`/agency-user/${session.userSub}/cognito`, true, {}, false, "BASE");
-
+          setUserDetails(response)
           if (error) {
             toast.error("Error: " + error, getToastOptions({ autoClose: false }));
             CognitoServiceObj.handleSignOut();

@@ -42,40 +42,17 @@ interface ApplicantScreeningRecord extends ResumeScreeningRecordDto {
   viewedDate: string | null;
 }
 
-const handleCVUrlGenerator = async (corporateBulkJdId: string, id: string, fileName: string) => {
-  if (!fileName && !id) {
-    toast.error("Document file not found", getToastOptions({}));
-    return;
-  }
-  try {
-    const payload = {
-      resourceKey: fileName,
-    };
-
-    const { response, error } = await httpServiceObj.get<{
-      objectUrl: string;
-    }>(`/file/${id}/${fileName}/BULK_CVS`, true, { corporateBulkJdId }, false, "BASE");
-    if (!response || error) {
-      throw new Error("Failed to get pre-signed URL for document");
-    }
-    // Open document in new tab
-    return response.objectUrl;
-  } catch (error) {
-    console.error("Error viewing document:", error);
-    toast.error("Failed to view document", getToastOptions({}));
-  }
-};
-
 export default function ApplicantScreeningTable() {
   const nav = useNavigate();
   const location = useLocation();
   const { userDetails } = useAppContext();
 
   //{ state: { jobTitle: row?.jobTitle } } get this and set the job title
-  let jobTitle = "";
-  if (location.state && (location.state as any).jobTitle) {
-    jobTitle = (location.state as any).jobTitle;
-  }
+  const locationState = (location.state as { jobTitle?: string; returnUrl?: string } | null) ?? {};
+  const queryJobTitle = new URLSearchParams(location.search).get("jobTitle") ?? "";
+  const jobTitle = locationState.jobTitle ?? queryJobTitle ?? "";
+  const returnUrl = locationState.returnUrl;
+  const fallbackReturnUrl = `${"/agency/agBulkCVCheck" }?tab=screening-list`;
 
   const [FeedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [scorePointsModal, setScorePointsModal] = useState<ScorePointsModalProps>();
@@ -85,18 +62,19 @@ export default function ApplicantScreeningTable() {
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
   const [pageSize, setPageSize] = useState<number>(10);
   const { id } = useParams<{ id: string }>();
+  const baseUrl = import.meta.env.APP_PROXY_AGENCY_BASE
   if (!id) {
     nav("/404");
   }
   const companyId = RBAC.can("play_admin")
     ? import.meta.env.APP_WORKO_COMP_ID
-    : userDetails?.companyId || "01JWAQF1G96E0SE9XHXSFGHNWW";
+    : userDetails?.id;
   const fallbackKeys = {};
   const params: Omit<CursorPaginationAdminBulkScreenedJobsParams, "lastKey"> = {
     pageSize: pageSize,
-    sortOrder: "descending",
-    companyId: companyId || "01JWAQF1G96E0SE9XHXSFGHNWW",
-    corporateBulkJdId: id as string,
+    // sortOrder: "descending",
+    // companyId: companyId,
+    agencyBulkJdId: id as string,
   };
 
   const {
@@ -134,6 +112,7 @@ export default function ApplicantScreeningTable() {
           viewedDate: item.updatedAt ? new Date(item.updatedAt).toLocaleDateString() : null,
         }));
     }
+    console.log(applicantsData.length)
     return [];
   }, [data]);
   const { sortedData, onSortChange } = useSortableData(applicantsData, fallbackKeys,    {
@@ -161,6 +140,27 @@ export default function ApplicantScreeningTable() {
       prev.includes(id) ? prev.filter((rowId) => rowId !== id) : [...prev, id]
     );
   };
+
+  const handleCVUrlGenerator = async (agencyBulkJdId: string, id: string, fileName: string) => {
+  if (!fileName && !id) {
+    toast.error("Document file not found", getToastOptions({}));
+    return;
+  }
+  try {
+    const payload = {
+      agencyBulkJdId,
+      bulkCvsAwsS3FileName:fileName
+    };
+    const { response, error } = await httpServiceObj.post<any>(`${baseUrl}/file/gsu2v/AGENCY_BULK_CVS`, payload, true, {}, true);
+    if (!response || error) {
+      throw new Error("Failed to get pre-signed URL for document");
+    }
+    return response.objectUrl;
+  } catch (error) {
+    console.error("Error viewing document:", error);
+    toast.error("Failed to view document", getToastOptions({}));
+  }
+};
 
   const toggleExpand = (id: string) => {
     setExpandedRows((prev) =>
@@ -195,6 +195,7 @@ export default function ApplicantScreeningTable() {
     {
       key: "company",
       label: "Company",
+      sortable:true,
       render: (row: (typeof applicantsData)[0]) => (
         <span
         data-tooltip-id="my-tooltip"
@@ -205,6 +206,7 @@ export default function ApplicantScreeningTable() {
     {
       key: "designation",
       label: "Designation",
+      sortable:true,
       render: (row: (typeof applicantsData)[0]) => (
         <span
         data-tooltip-id="my-tooltip"
@@ -215,6 +217,7 @@ export default function ApplicantScreeningTable() {
     {
       key: "yoe",
       label: "YOE",
+      sortable:true,
       render: (row: (typeof applicantsData)[0]) => (
         <span className="font-semibold text-gray-800">{row?.yoe}</span>
       ),
@@ -222,8 +225,9 @@ export default function ApplicantScreeningTable() {
     {
       key: "location",
       label: "Location",
+      sortable:true,
       render: (row: (typeof applicantsData)[0]) => (
-        <span className="text-gray-700">{row?.location}</span>
+        <span title={row?.location} className="text-gray-700">{row?.location}</span>
       ),
     },
     {
@@ -261,7 +265,7 @@ export default function ApplicantScreeningTable() {
           <button
             onClick={async () => {
               const url = await handleCVUrlGenerator(
-                row?.corporateBulkJdId,
+                row?.agencyBulkJdId,
                 row?.companyId,
                 row?.cloudFileName
               );
@@ -330,7 +334,9 @@ export default function ApplicantScreeningTable() {
       <div className="my-6">
         <div className="flex  flex-wrap items-center gap-4 mb-6">
           <button
-            onClick={() => nav(-1)}
+            onClick={() => {
+              nav(returnUrl || fallbackReturnUrl);
+            }}
             className="w-16 h-16 bg-white rounded-full shadow-md flex items-center justify-center hover:shadow-lg transition-shadow">
             <ArrowLeft className="w-6 h-6 text-gray-600" />
           </button>

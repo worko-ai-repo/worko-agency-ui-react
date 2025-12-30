@@ -94,6 +94,7 @@ export interface BulkUploadResponseDto {
   corporateBulkJdId: string;
   bulkCvs: FileUploadResponseMetadataDto[];
   bulkCvsStorageFailed: any[]; // Adjust type if known, currently it's just an empty array
+  agencyBulkJdId:string;
 }
 
 /**
@@ -221,6 +222,7 @@ export interface ResumeScreeningRecordDto {
   rejectionFeedbackBySystem: string; // Note: You may want to parse this into RejectionFeedbackItem[]
   scoreDetails: string; // Note: You may want to parse this into ScoreDetails
   scoreFetchedDate: string;
+  agencyBulkJdId:string;
 }
 
 /**
@@ -419,4 +421,5 @@ export interface CursorPaginationResumeScreeningRecordsParams {
   corporateRecruiterUserId?: string;
   corporateBulkJdId: string;
   lastKey?: string;
+  agencyBulkJdId:string;
 }

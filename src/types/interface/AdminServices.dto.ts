@@ -384,9 +384,10 @@ export interface CursorPaginationAdminBulkScreenedJobsParams {
   searchText?: string;
   lastKey?: string | undefined;
   pageSize: number;
-  sortOrder: string;
+  // sortOrder: string;
   companyId?: string;
   corporateBulkJdId?: string;
+  agencyBulkJdId?:string;
   corporateRecruiterUserId?: string;
 }
 

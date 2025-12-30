@@ -180,6 +180,7 @@ const BulkCVCheck: React.FC = () => {
               jobData={data}
               dropDownData={jobdescription}
               onClose={() => setIsBulkCvFormOpen(false)}
+              selectedJob={dropDownData}
             />
           </Suspense>
         </Modal>

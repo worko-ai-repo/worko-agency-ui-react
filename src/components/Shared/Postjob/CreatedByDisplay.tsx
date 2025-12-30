@@ -1,7 +1,8 @@
 import { JobData } from "@Interfaces/CorporateDashboard.dto";
 import httpServiceObj from "@Services/ApiHandler.service";
+import { fetchAuthSession } from "aws-amplify/auth";
 import React, { useEffect, useState } from "react";
-
+import { useAppContext } from "@Context/App.context";
 interface UserData {
   id: string;
   name?: string;
@@ -28,6 +29,8 @@ const CreatedByDisplay = <
     createdByCorporateUserId?: string;
     updatedByUserId?: string;
     updatedByCorporateUserId?: string;
+    updatedByAgencyUserId?:string;
+    createdByAgencyUserId?:string;
   }
 >({
   row,
@@ -35,50 +38,61 @@ const CreatedByDisplay = <
 }: CreatedByDisplayProps<T>) => {
   const [userData, setUserData] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const {userDetails} = useAppContext();
 
   useEffect(() => {
     const fetchUserData = async () => {
       let userId = "";
       let corporateUserId = "";
+      let agencyUserId = "";
 
       if (mode === "created") {
         userId = row?.createdByUserId || "";
         corporateUserId = row?.createdByCorporateUserId || "";
+        agencyUserId = row?.createdByAgencyUserId || "";
       } else if (mode === "updated") {
         userId = row?.updatedByUserId || "";
         corporateUserId = row?.updatedByCorporateUserId || "";
+        agencyUserId = row?.updatedByAgencyUserId || "";
       }
 
-      if (!corporateUserId && !userId) {
+      if (!corporateUserId && !userId && !agencyUserId) {
         throw new Error("No user ID found for display");
       }
 
       setLoading(true);
       try {
-        let url = "";
+        // let url = "";
 
-        if (corporateUserId) {
-          url = `/corporate-user/${corporateUserId}`;
-        } else if (userId) {
-          // user/:createdByUserId/detail`
-          url = `/user/${userId}/detail`;
-        }
+        // if (corporateUserId) {
+        //   url = `/corporate-user/${corporateUserId}`;
+        // } else if (userId) {
+        //   url = `/user/${userId}/detail`;
+        // } else if(agencyUserId) {
+        //   url = `/user/${agencyUserId}/detail`;
+        // }
+        
+        // const { response, error } = await httpServiceObj.get<UserData[]>(
+        //   url,
+        //   true,
+        //   {},
+        //   false,
+        //   "BASE"
+        // );
+        // if (!response?.length || error) {
+        //   throw new Error("Failed to fetch user data");
+        // }
 
-        const { response, error } = await httpServiceObj.get<UserData[]>(
-          url,
-          true,
-          {},
-          false,
-          "BASE"
-        );
-        if (!response?.length || error) {
-          throw new Error("Failed to fetch user data");
-        }
+        // //Construct display name
+        // if(agencyUserId){
 
-        //Construct display name
-        const displayName = response?.[0].firstName
-          ? `${response?.[0].firstName} ${response?.[0].lastName || ""}`.trim()
-          : response?.[0].name || response?.[0].id;
+        // }
+        // const displayName = response?.[0].firstName
+        //   ? `${response?.[0].firstName} ${response?.[0].lastName || ""}`.trim()
+        //   : response?.[0].name || response?.[0].id;
+        // setUserData(displayName);
+        if(!userDetails) throw new Error("Failed to fetch user data");
+        const displayName = userDetails.fullName
         setUserData(displayName);
       } catch (error) {
         console.error("Error fetching user data:", error);

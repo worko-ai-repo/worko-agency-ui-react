@@ -23,7 +23,7 @@ import {
 import { BulkJdParsedData } from "@Components/Dashboard/Agency/Pages/BulkCVCheck/BulkCvCheck";
 import { AgencyListDetailsDto } from "@Interfaces/AgencyDatabaseApplicantDetailsDto";
 
-const workoBaseApi = import.meta.env.APP_API_URI
+const workoBaseApi = import.meta.env.APP_PROXY_AGENCY_BASE
 const workoJobApi = import.meta.env.APP_JOBS_API_URI
 /**
  * Corporate Service File
@@ -288,7 +288,7 @@ class CorporateService {
   async bulkScreening(payload: any): Promise<CorporateBulkScreeningDto | {}> {
     try {
       const { response } = await httpServiceObj.post<CorporateBulkScreeningDto>(
-        `${workoBaseApi}/corporate-bulk-jd/`,
+        `${workoBaseApi}/agency-bulk-jd/`,
         payload,
         true,
         {},
@@ -320,7 +320,7 @@ class CorporateService {
   ): Promise<BulkUploadResponseDto | {}> {
     try {
       const { response } = await httpServiceObj.post<BulkUploadResponseDto>(
-        `${workoBaseApi}/corporate-bulk-jd/${bulkCvId}/resumes`,
+        `${workoBaseApi}/agency-bulk-jd/${bulkCvId}/resumes`,
         { bulkCvs: payload },
         true,
         {},
@@ -349,7 +349,7 @@ class CorporateService {
   async fetchBulkScreenedJobs(params: object): Promise<ApiResponseDto<BulkScreeningListItemDto>> {
     try {
       const { response } = await httpServiceObj.get<ApiResponseDto<BulkScreeningListItemDto>>(
-        `${workoBaseApi}/corporate-bulk-jd/`,
+        `${workoBaseApi}/agency-bulk-jd/`,
         true,
         params,
         true,
@@ -373,20 +373,19 @@ class CorporateService {
   }
 
   /**
-   * corporate-bulk-jd-resume
+   * agency-bulk-jd-resume
    *
    * @description - This api is used to get the bulk screening resumes based on the bulkCvId.
    */
   async getBulkScreeningResumes(params: object): Promise<ApiResponseDto<ResumeScreeningRecordDto>> {
     try {
       const { response } = await httpServiceObj.get<ApiResponseDto<ResumeScreeningRecordDto>>(
-        `${workoBaseApi}/corporate-bulk-jd-resume/`,
+        `${workoBaseApi}/agency-bulk-jd-resume/`,
         true,
         params,
         true,
         // "BASE"
       );
-
       if (!response) {
         throw new Error("No response received");
       }

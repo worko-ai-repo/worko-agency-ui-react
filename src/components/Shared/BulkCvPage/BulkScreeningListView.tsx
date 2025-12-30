@@ -34,9 +34,9 @@ const ScreeningListView: FunctionComponent = () => {
   const [BulkResumeId, setBulkResumeId] = useState<string>("");
   const [isBulkResumesOpen, setBulkResumesOpen] = useState<boolean>(false);
   const { userDetails } = useAppContext();
-  const companyId = RBAC.can("play_admin")
-    ? import.meta.env.APP_WORKO_COMP_ID
-    : userDetails?.companyId || "01JWAQF1G96E0SE9XHXSFGHNWW";
+  // const companyId = RBAC.can("play_admin")
+  //   ? import.meta.env.APP_WORKO_COMP_ID
+  //   : userDetails?.companyId;
   const [pageSize, setPageSize] = useState<number>(10);
   const keyFallbacks = {
     jobTitle: ["jobTitle", "jobTitle"],
@@ -49,15 +49,15 @@ const ScreeningListView: FunctionComponent = () => {
  
   const params: Omit<CursorPaginationAdminBulkScreenedJobsParams, "lastKey"> = {
     pageSize: pageSize,
-    sortOrder: "descending",
-    ...(userDetails?.companyId ? { companyId: userDetails.companyId } : {}),
+    // sortOrder: "descending",
+    // ...(userDetails?.companyId ? { companyId: userDetails.companyId } : {}),
   };
   const { data, isLoading, hasNextPage, hasPreviousPage, goToNextPage, goToPreviousPage, reset } =
     useCursorPagination<BulkScreeningListItemDto, CursorPaginationAdminBulkScreenedJobsParams>({
       queryKey: ["CorporateJobsApplicationQuery", params],
       queryFn: CorporateServiceObj.fetchBulkScreenedJobs,
       baseParams: params,
-       enabled: !!companyId, // only run if companyId exists
+      //enabled: !!companyId, // only run if companyId exists
     });
 
   /**
@@ -68,50 +68,63 @@ const ScreeningListView: FunctionComponent = () => {
   }, [pageSize]);
 
   // Use useMemo to memoize the transformed data and prevent unnecessary recalculations
-  const transformedData = useMemo(() => {
-    // console.log("Data from API:", data);
+  // const transformedData = useMemo(() => {
+  //   // console.log("Data from API:", data);
 
-    if (data && Array.isArray(data)) {
-      return data.map((item) => ({
-        id: item.id,
-        jobTitle: item.jobTitle || "Not mentioned",
-        location: item.jobLocation || "Not mentioned",
-        resumesCount: item.resumesCount || 0,
-        experienceRange: item.experienceRange
-          ? `${item.experienceRange.min} - ${item.experienceRange.max}`
-          : "Not mentioned",
-        totalCandidates: 0,
-        screenOnDate: item.createdAt
-          ? new Date(item.createdAt).toLocaleString("en-US", {
-              year: "numeric",
-              month: "numeric",
-              day: "numeric",
-            })
-          : "Not mentioned",
-        doneBy: item?.corporateUserDetails?.firstName 
-          ? `${item.corporateUserDetails.firstName}${item.corporateUserDetails.lastName || ''}`
-          : (item)?.userDetails?.name || "Not mentioned",
-      }));
-    } else {
-      console.warn("Data is not in the expected format or is empty.");
-      return [];
-    }
-  }, [data]); // Only recalculate when data changes
-  const { sortedData, onSortChange } = useSortableData(transformedData, keyFallbacks,
+  //   if (data && Array.isArray(data)) {
+  //     return data.map((item) => ({
+  //       id: item.id,
+  //       jobTitle: item.jobTitle || "Not mentioned",
+  //       location: item.jobLocation || "Not mentioned",
+  //       resumesCount: item.resumesCount || 0,
+  //       experienceRange: item.experienceRange
+  //         ? `${item.experienceRange.min} - ${item.experienceRange.max}`
+  //         : "Not mentioned",
+  //       totalCandidates: 0,
+  //       screenOnDate: item.createdAt
+  //         ? new Date(item.createdAt).toLocaleDateString("en-GB")
+  //         : "Not mentioned",
+  //       doneBy: item?.corporateUserDetails?.firstName 
+  //         ? `${item.corporateUserDetails.firstName}${item.corporateUserDetails.lastName || ''}`
+  //         : (item)?.userDetails?.name || "Not mentioned",
+  //     }));
+  //   } else {
+  //     console.warn("Data is not in the expected format or is empty.");
+  //     return [];
+  //   }
+  // }, [data]); // Only recalculate when data changes
+  const { sortedData, onSortChange } = useSortableData<any>(data, keyFallbacks,
     {
       tableId:"screening-applicant-view",
       defaultSort:null,
       persistInLocalStorage:false,
-      persistInUrl:true
+      persistInUrl:false
     }
   );
+    const returnUrl = useMemo(() => {
+    const search = location.search || "?tab=screening-list";
+    return `${location.pathname}${search}`;
+  }, [location.pathname, location.search]);
+  
   const renderActions = useCallback(
     (row: ScreeningRecord) => (
       <div className="flex  items-center">
         <button
           onClick={(e) => {
             e.stopPropagation();
-            nav(`listing/${row.id}`, { state: { jobTitle: row.jobTitle } });
+            const searchParams = new URLSearchParams();
+            if (row.jobTitle) {
+              searchParams.set("jobTitle", row.jobTitle);
+            }
+            nav(
+              {
+                pathname: `listing/${row.id}`,
+                search: searchParams.size ? `?${searchParams.toString()}` : "",
+              },
+              {
+                state: { jobTitle: row.jobTitle, returnUrl },
+              }
+            );
           }}
           data-tooltip-id="my-tooltip"
           data-tooltip-content="View details"
@@ -138,11 +151,28 @@ const ScreeningListView: FunctionComponent = () => {
       key: "location",
       label: "Location",
       sortable: true,
+      render: (row: any) => {
+        console.log("row:", row);
+        return (
+          <div className="flex justify-center m-auto w-[150px]">
+            <span className="truncate block w-full" title={row?.jobLocation}>
+              {row?.jobLocation}
+            </span>
+          </div>
+        );
+      },
     },
     {
       key: "experienceRange",
       label: "Experience range",
       sortable: true,
+      render: (row:any) => (
+        <div className="flex justify-center m-auto w-[150px]">
+          <span className="truncate block w-full" title={`${row?.experienceRange?.min} - ${row?.experienceRange?.max}`}>
+            {row?.experienceRange?.min} - {row?.experienceRange?.max}
+          </span>
+        </div>
+      ),
     },
     {
       key: "resumesCount",
@@ -153,11 +183,25 @@ const ScreeningListView: FunctionComponent = () => {
       key: "screenOnDate",
       label: "Screen on date",
       sortable: true,
+      render: (row:any) => (
+        <div className="flex justify-center m-auto w-[150px]">
+          <span className="truncate block w-full" title={new Date(row?.createdAt).toLocaleDateString("en-GB")}>
+            {new Date(row?.createdAt).toLocaleDateString("en-GB")}
+          </span>
+        </div>
+      ),
     },
     {
       key: "doneBy",
       label: "Done by",
-      sortable: true,
+      sortable: false,
+      render: () => (
+          <div className="flex justify-center m-auto w-[150px]">
+            <span className="truncate block w-full" title={userDetails?.fullName}>
+              {userDetails?.fullName}
+            </span>
+          </div>
+        ),
     },
 
     {

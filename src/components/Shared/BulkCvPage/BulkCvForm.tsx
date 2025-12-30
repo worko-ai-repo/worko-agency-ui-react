@@ -43,9 +43,10 @@ interface BulkCvFormProps {
   onClose: () => void;
   jobData: BulkJdParsedData;
   dropDownData: string;
+  selectedJob:any
 }
 
-const BulkCvForm: React.FC<BulkCvFormProps> = ({ isOpen, onClose, jobData, dropDownData }) => {
+const BulkCvForm: React.FC<BulkCvFormProps> = ({ isOpen, onClose, jobData, dropDownData, selectedJob }) => {
   const nav = useNavigate();
   const { setBulkScreenDone } = useDashboardContext();
   const [isProcessing, setIsProcessing] = useState(false);
@@ -57,7 +58,7 @@ const BulkCvForm: React.FC<BulkCvFormProps> = ({ isOpen, onClose, jobData, dropD
   const { userDetails } = useAppContext();
   const companyId = RBAC.can("play_admin")
     ? import.meta.env.APP_WORKO_COMP_ID
-    : userDetails?.companyId || "01JWAQF1G96E0SE9XHXSFGHNWW";
+    : selectedJob?.companyId;
   const {
     control,
     handleSubmit,
@@ -94,7 +95,7 @@ const BulkCvForm: React.FC<BulkCvFormProps> = ({ isOpen, onClose, jobData, dropD
     value: label, // store selected location as plain string
   }));
   // Prefill form data when jobData is available
-  useEffect(() => {
+  useEffect(() => { 
     try {
       if (!jobData) {
         return;

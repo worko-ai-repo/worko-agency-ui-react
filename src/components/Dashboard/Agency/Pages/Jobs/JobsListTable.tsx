@@ -10,6 +10,7 @@ import UploadProfile from "./modals/UploadProfile";
 import { DynamicTableTwo } from "@Components/Shared/DynamicTableTwo";
 import DuplicateUploadProfileCheck from "./modals/DuplicateUploadProfileCheck";
 import { duplicate_profile } from "@AssetsFolder/assets";
+import { NewDynamicTable } from "@Components/Shared/NewDynamicTable";
 
 
 export const getCvViewDate = (statusTracker: any[]) => {
@@ -167,59 +168,64 @@ const columns = [
         key: "companyName",
         label: "Company name",
         sortable: true,
-        render: (row: AgencyJobsList) => (
-            <div className='flex justify-center m-auto w-[150px]'>
-                <span 
-                title={row?.jobDetails?.companyName}
-                className="truncate block w-full">{row?.jobDetails?.companyName ?? "NA"}</span>
-            </div>
-        ),
+        render: (row: AgencyJobsList) => row?.jobDetails?.companyName ?? "NA"
+        // (
+        //     <div className='flex justify-center m-auto w-[150px]'>
+        //         <span 
+        //         title={row?.jobDetails?.companyName}
+        //         className="truncate block w-full">{row?.jobDetails?.companyName ?? "NA"}</span>
+        //     </div>
+        // ),
     },
     {
         key: "profile",
         label: "Profile",
         sortable: true,
-        render: (row: AgencyJobsList) => (
-            <div className='flex justify-center m-auto w-[150px] text-center'>
-                <span 
-                title={row?.jobDetails?.jobTitle}
-                className="truncate block w-full">{row?.jobDetails?.jobTitle ?? "NA"}</span>
-            </div>
-        ),
+        render: (row: AgencyJobsList) => row?.jobDetails?.jobTitle ?? "NA"
+        // (
+        //     <div className='flex justify-center m-auto w-[150px] text-center'>
+        //         <span 
+        //         title={row?.jobDetails?.jobTitle}
+        //         className="truncate block w-full">{row?.jobDetails?.jobTitle ?? "NA"}</span>
+        //     </div>
+        // ),
     },
     {
         key: "yoe",
         label: "YOE range",
         sortable: true,
-        render: (row: AgencyJobsList) => (
-        <div className='flex justify-center m-auto w-[150px]'>
-            <span>{row?.jobDetails?.experienceRange?.min ?? "NA"}-{row?.jobDetails?.experienceRange?.max ?? "NA"} years</span>
-        </div>
-        ),
+        render: (row: AgencyJobsList) => `${row?.jobDetails?.experienceRange?.min ?? "NA"}-${row?.jobDetails?.experienceRange?.max ?? "NA"} years`
+        // (
+        // <div className='flex justify-center m-auto w-[150px]'>
+        //     <span>{row?.jobDetails?.experienceRange?.min ?? "NA"}-{row?.jobDetails?.experienceRange?.max ?? "NA"} years</span>
+        // </div>
+        // ),
     },
     {
         key: "salaryRange",
         label: "Salary range",
         sortable: true,
-        render: (row: AgencyJobsList) => (
-            <div className='flex justify-center m-auto w-[150px]'>
-               <span>{row?.jobDetails?.salaryRange?.min ?? "NA"} LPA - {row?.jobDetails?.salaryRange?.max ?? "NA"} LPA</span>
-            </div>
-        ),
+        render: (row: AgencyJobsList) => `${row?.jobDetails?.salaryRange?.min ?? "NA"} LPA - ${row?.jobDetails?.salaryRange?.max ?? "NA"} LPA`
+        // (
+        //     <div className='flex justify-center m-auto w-[150px]'>
+        //        <span>{row?.jobDetails?.salaryRange?.min ?? "NA"} LPA - {row?.jobDetails?.salaryRange?.max ?? "NA"} LPA</span>
+        //     </div>
+        // ),
     },
     {
         key: "location",
         label: "Location",
         sortable: true,
-        render: (row: AgencyJobsList) => (
-            <div className='flex justify-center m-auto w-[100px] text-center'>
-                <span 
-                  title={row?.jobDetails?.location?.fullLocation[0]}
-                  className="truncate block w-full">
-                  {row?.jobDetails?.location?.fullLocation ?? "NA"}
-                </span>
-            </div>
-        ),
+        render: (row: AgencyJobsList) => row?.jobDetails?.location?.fullLocation[0] ?? "NA"
+        // (
+        //     <div className='flex justify-center m-auto w-[100px] text-center'>
+        //         <span 
+        //           title={row?.jobDetails?.location?.fullLocation[0]}
+        //           className="truncate block w-full">
+        //           {row?.jobDetails?.location?.fullLocation ?? "NA"}
+        //         </span>
+        //     </div>
+        // ),
     },
     {
         key: "noticePeriod",
@@ -235,17 +241,24 @@ const columns = [
         key: "dateAssigned",
         label: "Date assigned",
         sortable: true,
-        render: (row: AgencyJobsList) => (
-            <div className='flex justify-center m-auto w-[150px]'>        
-                <span >{row?.jobDetails?.createdAt
+        render: (row: AgencyJobsList) => row?.jobDetails?.createdAt
                   ? new Date(row?.jobDetails?.createdAt).toLocaleDateString("en-GB", {
                       day: "2-digit",
                       month: "2-digit",
                       year: "numeric",
                     })
-                  : "NA"}</span>
-            </div>
-        ),
+                  : "NA"
+        //           (
+        //     <div className='flex justify-center m-auto w-[150px]'>        
+        //         <span >{row?.jobDetails?.createdAt
+        //           ? new Date(row?.jobDetails?.createdAt).toLocaleDateString("en-GB", {
+        //               day: "2-digit",
+        //               month: "2-digit",
+        //               year: "numeric",
+        //             })
+        //           : "NA"}</span>
+        //     </div>
+        // ),
     },
     {
         key: "uploadProfile",
@@ -254,7 +267,9 @@ const columns = [
         render: (row: AgencyJobsList) => (
             <div className='flex justify-center m-auto w-[120px]'>
                 <button 
-                title="upload new profile"
+                data-tooltip-id="my-tooltip"
+                data-tooltip-content="Upload new profile"
+                data-tooltip-place="top"
                 onClick={()=>{
                   setSelectedRow(row)
                   setIsProfileUploadModalOpen(true)
@@ -264,7 +279,9 @@ const columns = [
                     {/* Upload profile */}
                 </button>
                 <button
-                title="check duplicate profile"
+                data-tooltip-id="my-tooltip"
+                data-tooltip-content="Check duplicate profile"
+                data-tooltip-place="top"
                 className="flex-none inline-flex items-center justify-center gap-2 h-9 rounded-lg p-2 text-xs transition bg-white text-white border-2"
                 onClick={()=>{
                   setSelectedRow(row)
@@ -361,7 +378,7 @@ const columns = [
         <span>deselect {ListSelection?.selectedRows?.length ?? 0} rows</span>
       </button>
 
-        <DynamicTableTwo
+        <NewDynamicTable
         columns={columns}
         rows={sortedData ?? []}
         selectedRows={ListSelection?.selectedRows?.map((row: any) => row.id) ?? []}

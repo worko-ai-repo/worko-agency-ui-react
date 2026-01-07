@@ -237,12 +237,13 @@ label {
 }
 
 #my-tooltip {
-	width: 100%;
-	text-align: left;
-	text-wrap: break-word;
-	max-width: 200px;
-	padding: 1rem;
-	border-radius: 0.5rem;
+  /* width: 100%; */
+  text-align: left;
+  text-wrap: break-word;
+  max-width: 70vw;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  z-index: 999999999999999;
 }
 @media screen and (max-width: 480px) {
 	.section-wrapper {

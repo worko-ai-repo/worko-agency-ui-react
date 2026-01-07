@@ -15,6 +15,7 @@ import { getToastOptions } from "@Utils/Toast.utils";
 import httpServiceObj from "@Services/ApiHandler.service";
 import { JobApplicationStatusType } from "src/types/JobsAndApplication.type";
 import { newDisplayStatus, statusColors } from "../Applicants/ApplicantsListTable";
+import { NewDynamicTable } from "@Components/Shared/NewDynamicTable";
 
 export const getCvViewDate = (statusTracker: any[]) => {
   const cvDownloadedEntry = statusTracker?.find((entry) => entry.newStatus === "CV_DOWNLOADED");
@@ -139,43 +140,52 @@ export default function InvitesListTable(props: any) {
         key: "companyName",
         label: "Company name",
         sortable: true,
-        render: (row: AgencyInvitesListDetailsDto) => (
-            <div className='flex justify-center m-auto w-[150px] text-center'>
-                <span 
-                title={row?.companyName}
-                className="truncate block w-full">{row?.companyName ?? "NA"}</span>
-            </div>
-        ),
+        render: (row: AgencyInvitesListDetailsDto) => row?.companyName ?? "NA"
+        // (
+        //     <div className='flex justify-center m-auto w-[150px] text-center'>
+        //         <span 
+        //         title={row?.companyName}
+        //         className="truncate block w-full">{row?.companyName ?? "NA"}</span>
+        //     </div>
+        // ),
     },
     {
         key: "senderName",
         label: "Sender name(HR)",
         sortable: true,
-        render: (row: AgencyInvitesListDetailsDto) => (
-            <div className='flex justify-center m-auto w-[150px] text-center'>
-                <span title={row?.inviterName}
-                className="truncate block w-full">{row?.inviterName ?? "NA"}</span>
-            </div>
-        ),
+        render: (row: AgencyInvitesListDetailsDto) => row?.inviterName ?? "NA"
+        // (
+        //     <div className='flex justify-center m-auto w-[150px] text-center'>
+        //         <span title={row?.inviterName}
+        //         className="truncate block w-full">{row?.inviterName ?? "NA"}</span>
+        //     </div>
+        // ),
     },
     {
         key: "date",
         label: "Date",
         sortable: true,
         contentWidth: `max-w-none`,
-        render: (row: AgencyInvitesListDetailsDto) => (
-            <div className='flex justify-center m-auto w-[150px]'>
-              <span>
-                {row?.createdAt
+        render: (row: AgencyInvitesListDetailsDto) => row?.createdAt
                   ? new Date(row.createdAt).toLocaleDateString("en-GB", {
                       day: "2-digit",
                       month: "2-digit",
                       year: "numeric",
                     })
-                  : "NA"}
-              </span>
-            </div>
-        ),
+                  : "NA"
+                  // (
+            // <div className='flex justify-center m-auto w-[150px]'>
+            //   <span>
+            //     {row?.createdAt
+            //       ? new Date(row.createdAt).toLocaleDateString("en-GB", {
+            //           day: "2-digit",
+            //           month: "2-digit",
+            //           year: "numeric",
+            //         })
+            //       : "NA"}
+            //   </span>
+            // </div>
+        // ),
     },
     {
         key: "action",
@@ -189,6 +199,9 @@ export default function InvitesListTable(props: any) {
               {row.inviteStatus === "AWAITING" ? (
                 <>
                   <button
+                    data-tooltip-id="my-tooltip"
+                    data-tooltip-content={row.inviteStatus as JobApplicationStatusType}
+                    data-tooltip-place="top"
                     className="border rounded-lg p-2 bg-green-600 text-white"
                     onClick={() => {
                       acceptAndReject(row,"ACCEPTED")
@@ -200,6 +213,9 @@ export default function InvitesListTable(props: any) {
                   </button>
 
                   <button
+                    data-tooltip-id="my-tooltip"
+                    data-tooltip-content={row.inviteStatus as JobApplicationStatusType}
+                    data-tooltip-place="top"
                     className="border rounded-lg p-2 bg-red-600 text-white"
                     onClick={() => {
                       acceptAndReject(row,"REJECTED")
@@ -211,7 +227,11 @@ export default function InvitesListTable(props: any) {
                   </button>
                 </>
               ):
-              <span className={`px-3 py-1 h-fit rounded-full text-xs font-medium overflow-visible  capitalize ${colorClass}`}>
+              <span 
+                data-tooltip-id="my-tooltip"
+                data-tooltip-content={row.inviteStatus as JobApplicationStatusType}
+                data-tooltip-place="top"
+                className={`px-3 py-1 h-fit rounded-full text-xs font-medium overflow-visible  capitalize ${colorClass}`}>
                 {newDisplayStatus[row.inviteStatus as JobApplicationStatusType]}</span>
               }
             </div>
@@ -230,7 +250,7 @@ export default function InvitesListTable(props: any) {
         <span>deselect {ListSelection?.selectedRows?.length ?? 0} rows</span>
       </button>
 
-        <DynamicTableTwo
+        <NewDynamicTable
         columns={columns}
         rows={sortedData ?? []}
         selectedRows={ListSelection?.selectedRows?.map((row: any) => row.id) ?? []}

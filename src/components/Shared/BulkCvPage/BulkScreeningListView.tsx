@@ -14,6 +14,7 @@ import { RBAC } from "@Utils/RoleBaseAccessControll.utils";
 import { useNavigate } from "react-router-dom";
 import { useSortableData } from "@Hooks/useSortTableData.hook";
 import { Column, DynamicTableTwo } from "../DynamicTableTwo";
+import { NewDynamicTable } from "../NewDynamicTable";
 
 
 // Define the data type for our screening records
@@ -155,8 +156,12 @@ const ScreeningListView: FunctionComponent = () => {
         console.log("row:", row);
         return (
           <div className="flex justify-center m-auto w-[150px]">
-            <span className="truncate block w-full" title={row?.jobLocation}>
-              {row?.jobLocation}
+            <span 
+            className="truncate block w-full" 
+            data-tooltip-id="my-tooltip"
+            data-tooltip-content={row?.jobLocation}
+            data-tooltip-place="top">
+              {row?.jobLocation ?? "NA"}
             </span>
           </div>
         );
@@ -168,7 +173,8 @@ const ScreeningListView: FunctionComponent = () => {
       sortable: true,
       render: (row:any) => (
         <div className="flex justify-center m-auto w-[150px]">
-          <span className="truncate block w-full" title={`${row?.experienceRange?.min} - ${row?.experienceRange?.max}`}>
+          <span 
+          className="truncate block w-full" >
             {row?.experienceRange?.min} - {row?.experienceRange?.max}
           </span>
         </div>
@@ -185,7 +191,11 @@ const ScreeningListView: FunctionComponent = () => {
       sortable: true,
       render: (row:any) => (
         <div className="flex justify-center m-auto w-[150px]">
-          <span className="truncate block w-full" title={new Date(row?.createdAt).toLocaleDateString("en-GB")}>
+          <span 
+          className="truncate block w-full" 
+          data-tooltip-id="my-tooltip"
+          data-tooltip-content={new Date(row?.createdAt).toLocaleDateString("en-GB")}
+          data-tooltip-place="top">
             {new Date(row?.createdAt).toLocaleDateString("en-GB")}
           </span>
         </div>
@@ -197,8 +207,12 @@ const ScreeningListView: FunctionComponent = () => {
       sortable: false,
       render: () => (
           <div className="flex justify-center m-auto w-[150px]">
-            <span className="truncate block w-full" title={userDetails?.fullName}>
-              {userDetails?.fullName}
+            <span 
+            className="truncate block w-full" 
+            data-tooltip-id="my-tooltip"
+            data-tooltip-content={userDetails?.fullName}
+            data-tooltip-place="top">
+              {userDetails?.fullName ?? "NA"}
             </span>
           </div>
         ),
@@ -217,7 +231,7 @@ const ScreeningListView: FunctionComponent = () => {
 
       <div className="p-6">
         <div className="max-w-full mx-auto">
-          <DynamicTableTwo
+          <NewDynamicTable
             columns={columns}
             rows={sortedData ?? []}
             enableSelect={false}

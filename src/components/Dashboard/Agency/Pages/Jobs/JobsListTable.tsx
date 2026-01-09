@@ -84,7 +84,7 @@ export default function JobsListTable(props: any) {
     location: ["jobDetails.location.fullLocation"],
     noticePeriod: ["jobDetails.noticePeriod"],
     dateAssigned: ["jobDetails.createdAt"],
-    candidatesUploaded: ["candidatesUploaded", "jobDetails.candidatesUploaded"],
+    candidatesUploaded: ["totalCandidatesUploaded"],
     candidatesRejected: ["candidatesRejected", "jobDetails.candidatesRejected"],
     candidatesInProcess: ["candidatesInProcess", "jobDetails.candidatesInProcess"],
   };

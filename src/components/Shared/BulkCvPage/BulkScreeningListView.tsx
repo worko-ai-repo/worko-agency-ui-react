@@ -42,7 +42,7 @@ const ScreeningListView: FunctionComponent = () => {
   const keyFallbacks = {
     jobTitle: ["jobTitle", "jobTitle"],
     location: ["jobLocation", "jobLocation"],
-    experienceRange: ["experienceRange", "experienceRange"],
+    experienceRange: ["experienceRange.min", "experienceRange"],
     totalCandidates: ["totalCandidates", "totalCandidates"],
     screenOnDate: ["createdAt", "createdAt"],
     doneBy: ["createdByCorporateUserId", "createdByCorporateUserId"],
@@ -229,7 +229,7 @@ const ScreeningListView: FunctionComponent = () => {
     <SkeletonLoader showTableHeader={true} showTableRows={true} tableColumns={5} rowCount={5} />
   ) : (
 
-      <div className="p-6">
+      <div className="p-1">
         <div className="max-w-full mx-auto">
           <NewDynamicTable
             columns={columns}

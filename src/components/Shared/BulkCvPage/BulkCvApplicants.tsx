@@ -25,6 +25,7 @@ import httpServiceObj from "@Services/ApiHandler.service";
 import { getToastOptions } from "@Utils/Toast.utils";
 import CreatedByDisplay from "../Postjob/CreatedByDisplay";
 import { DynamicTableTwo, Column } from "../DynamicTableTwo";
+import { NewDynamicTable } from "../NewDynamicTable";
 
 
 
@@ -387,7 +388,7 @@ export default function ApplicantScreeningTable() {
       </div>
 
       {/* Table Section */}
-      <DynamicTableTwo
+      <NewDynamicTable
         columns={columns}
         renderExpandedDetails={renderExpandedDetails}
         toggleExpand={toggleExpand}
@@ -404,6 +405,7 @@ export default function ApplicantScreeningTable() {
         hasPrevPage={hasPreviousPage}
         handleNextPage={goToNextPage}
         handlePreviousPage={goToPreviousPage}
+        enableExpand={true}
       />
       <Modal
         isOpen={FeedbackModalOpen}

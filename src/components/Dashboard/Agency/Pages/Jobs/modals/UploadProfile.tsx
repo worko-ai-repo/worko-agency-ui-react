@@ -599,7 +599,8 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                     <label htmlFor="">Ready to relocate<span className='text-red-500'>*</span></label>
                     <select
                       disabled={!isResumeValid}
-                      className="input_primary auth_input text-gray-300"
+                      className="input_primary auth_input text-gray-700"
+                      style={{ color: "#374151" }}
                       {...register("relocate", {
                         required: "relocation preference is required",
                       })}
@@ -609,9 +610,9 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                       }}
                       defaultValue="true"
                     >
-                      <option value="">Choose</option>
-                      <option value="true">Yes</option>
-                      <option value="false">No</option>
+                      <option value="" style={{ color: "#374151" }}>Choose</option>
+                      <option value="true" style={{ color: "#374151" }}>Yes</option>
+                      <option value="false" style={{ color: "#374151" }}>No</option>
                     </select>
 
                     {errors.relocate && <p className="text-red-500 text-sm mt-1">{errors.relocate.message}</p>}

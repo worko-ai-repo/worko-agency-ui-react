@@ -331,7 +331,7 @@ export function NewDynamicTable<T extends { id: string }>({
                       return (
                         <td
                           key={col.key}
-                          className={`max-w-60 w-32 px-4 ${isExpanded ? "" : "border-b"}  py-1 text-xs whitespace-nowrap ${
+                          className={`w-min max-w-60 w-32 px-4 ${isExpanded ? "" : "border-b"}  py-1 text-xs whitespace-nowrap ${
                             col.key !== "email" ? "capitalize" : ""
                           } ${baseBg}
                           ${col.contentWidth || ""}
@@ -375,7 +375,7 @@ export function NewDynamicTable<T extends { id: string }>({
                         {/* 🆕 Main content area - dynamically calculated colspan */}
                         <td
                           colSpan={mainContentCols}
-                          className="relative bg-white p-0 text-xs h-32 border-r  border-b border-l   text-gray-600">
+                          className="relative bg-white p-0 text-xs h-6 border-r  border-b border-l   text-gray-600">
                           <div className="px-4 py-2 h-full">
                             {extraExpandedColumns.length > 0 && (
                               <div className="grid grid-cols-7 gap-2  mb-4 w-full" >

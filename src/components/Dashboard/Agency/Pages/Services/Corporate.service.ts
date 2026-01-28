@@ -19,6 +19,7 @@ import {
   BulkJobApplicationUpdateItem,
   EvaluationResponseItemDto,
   BulkJobApplicationUpdatePayload,
+  BulkScreeningResponse,
 } from "@Interfaces/CorporateServices.dto";
 import { BulkJdParsedData } from "@Components/Dashboard/Agency/Pages/BulkCVCheck/BulkCvCheck";
 import { AgencyListDetailsDto } from "@Interfaces/AgencyDatabaseApplicantDetailsDto";
@@ -283,11 +284,11 @@ class CorporateService {
   technicalSkills: string[];
   industryPreference: string;
   jobLocation: string;}'
-  * @return {Promise<CorporateBulkScreeningDto>} - Common job data that will be listed in the corporate dashboard.
+  * @return {Promise<BulkScreeningResponse>} - Common job data that will be listed in the corporate dashboard.
  */
-  async bulkScreening(payload: any): Promise<CorporateBulkScreeningDto | {}> {
+  async bulkScreening(payload: any): Promise<BulkScreeningResponse> {
     try {
-      const { response } = await httpServiceObj.post<CorporateBulkScreeningDto>(
+      const { response, error } = await httpServiceObj.post<CorporateBulkScreeningDto>(
         `${workoBaseApi}/agency-bulk-jd/`,
         payload,
         true,
@@ -296,13 +297,13 @@ class CorporateService {
         // "BASE"
       );
       
-      if (!response) {
-        throw new Error("No response received");
-      }
-      return response;
+      // if (!response) {
+      //   throw new Error("No response received");
+      // }
+      return { request: response, error };
     } catch (error: any) {
       console.error("[CORPORATE SERVICE]: Failed to bulk screen Job applications.", error);
-      return {};
+      return { request: null, error };
     }
   }
 

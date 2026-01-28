@@ -49,6 +49,10 @@ export interface CorporateBulkScreeningDto {
   resumesCount: number;
 }
 
+export interface BulkScreeningResponse {
+  request: CorporateBulkScreeningDto | null;
+  error: any;
+}
 /**
  * CorporateBulkScreenPayload
  *

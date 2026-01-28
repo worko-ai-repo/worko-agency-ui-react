@@ -264,10 +264,10 @@ const BulkCvForm: React.FC<BulkCvFormProps> = ({ isOpen, onClose, jobData, dropD
 
     // setIsProcessing(true);
     onClose();
-    toast.info(
-      "Your request is being processed , you will be notified once done.",
-      getToastOptions({})
-    );
+    // toast.info(
+    //   "Your request is being processed , you will be notified once done.",
+    //   getToastOptions({})
+    // );
     setUploadError("");
     try {
       const finalPayload = {
@@ -287,9 +287,19 @@ const BulkCvForm: React.FC<BulkCvFormProps> = ({ isOpen, onClose, jobData, dropD
           min: data.experienceRange.min,
           max: data.experienceRange.max,
         },
+        resumesCount:uploadedFiles.length,
       };
       // Step 1: Create a partition in ddb for the bulk CV check
-      const request = await CorporateServiceObj.bulkScreening(finalPayload);
+      const {request, error} = await CorporateServiceObj.bulkScreening(finalPayload);
+      if(error){
+        if(error.message === "Insufficient CV credits. Please recharge your wallet to continue."){
+          toast.error("Insufficient CV credits. Please recharge your wallet to continue.",getToastOptions({}))
+          return
+        }else{
+          toast.error(error.message, getToastOptions({}))
+          return
+        }
+      }
       if (!request || !("id" in request)) {
         throw new Error("Failed to create bulk screening request or missing 'id' property");
       }
@@ -303,6 +313,7 @@ const BulkCvForm: React.FC<BulkCvFormProps> = ({ isOpen, onClose, jobData, dropD
 
       await storeDataToS3(filePayload, bulkJdId);
       setBulkScreenDone(true);
+      toast.info("Your request is being processed , you will be notified once done.",getToastOptions({}));
     } catch (error) {
       console.error("Error creating bulk screening request:", error);
       setUploadError("Failed to create bulk screening request");

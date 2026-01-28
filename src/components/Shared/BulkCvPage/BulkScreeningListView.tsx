@@ -153,7 +153,6 @@ const ScreeningListView: FunctionComponent = () => {
       label: "Location",
       sortable: true,
       render: (row: any) => {
-        console.log("row:", row);
         return (
           <div className="flex justify-center m-auto w-[150px]">
             <span 

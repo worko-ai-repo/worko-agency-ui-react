@@ -87,7 +87,7 @@ const Credits = () => {
     try {
       const params = {
         sortOrder : "asc",
-        pageSize:10,
+        pageSize:25,
       }
       const { response, error } = await httpServiceObj.get<CreditsListApiResponse>(`/agency-cv-recharge-package/`, true, params, false,"BASE");
       if(error){
@@ -112,7 +112,7 @@ const Credits = () => {
     try {
       const params = {
         agencyUserId : userDetails?.id,
-        pageSize:10,
+        pageSize:200,
       }
       const { response, error } = await httpServiceObj.get<CreditedAndDebitedTransactionListApiResponse>(`/agency-cv-credit-transaction/`, true, params, false,"BASE");
       if(error){
@@ -135,7 +135,7 @@ const Credits = () => {
     try {
       const params = {
         agencyUserId : userDetails?.id,
-        pageSize:10,
+        pageSize:200,
       }
       const { response, error } = await httpServiceObj.get<CreditedAndDebitedTransactionListApiResponse>(`/agency-cv-debit-transaction/`, true, params, false,"BASE");
       if(error){

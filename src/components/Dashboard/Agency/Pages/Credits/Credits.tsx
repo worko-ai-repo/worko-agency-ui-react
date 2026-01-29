@@ -79,6 +79,7 @@ const Credits = () => {
   const [amount, setAmount] = useState<number>(0);
   const [showOrderDetails, setShowOrderDetails] = useState<boolean>(false);
   const [switcher,setSwitcher] = useState<string>("credit");
+  const [isSeeFullHistory,setIsSeeFullHistory] = useState<boolean>(false);
   const razorpayKey= import.meta.env.APP_RAZORPAY
 
   const getCreditsList = async () =>{
@@ -104,7 +105,7 @@ const Credits = () => {
   }
 
   const getCreditedTransactionsList = async () =>{
-    if(!userDetails){
+    if(!userDetails?.id){
       toast.error("No user details found please log in again",getToastOptions({}))
     }
     setIsCreditedTransactionListLoading(true)
@@ -127,7 +128,7 @@ const Credits = () => {
   }
 
   const getDebitedTransactionsList = async () =>{
-    if(!userDetails){
+    if(!userDetails?.id){
       toast.error("No user details found please log in again",getToastOptions({}))
     }
     setIsDebitedTransactionListLoading(true)
@@ -150,7 +151,7 @@ const Credits = () => {
   }
 
   const getBalanceCVCountAndWalletDetails = async () =>{
-    if(!userDetails){
+    if(!userDetails?.id){
       toast.error("No user details found please log in again",getToastOptions({}))
     }
     setIsBalanceCVCountListLoading(true)
@@ -198,6 +199,10 @@ const Credits = () => {
   }
 
   const handleBuyNow = async () => {
+    if(!userDetails){
+      toast.error("No user details found please log in again")
+      return
+    }
     const createOrderResponse = await startRazorpayPayment({
       price: selectedPlan?.totalAmount ?? 0,
       userDetails:userDetails ?? undefined,
@@ -232,6 +237,7 @@ const Credits = () => {
   };
 
   const firstCall = async () =>{
+    if (!userDetails?.id) return;
     getCreditsList()
     getCreditedTransactionsList()
     getDebitedTransactionsList()
@@ -239,10 +245,12 @@ const Credits = () => {
   }
   useEffect(() => {
     firstCall()
-  }, [userDetails])
+  }, [userDetails?.id])
 
   const isLoading = switcher === "credit" ? isCreditedTransactionListLoading : isDebitedTransactionListLoading;
-  const transactions = switcher === "credit" ? creditedTransactionList : debitedTransactionList;
+  const fullTransactions = switcher === "credit" ? creditedTransactionList : debitedTransactionList;
+  const splittedTransactions = fullTransactions.slice(0,3)
+  const transactions = isSeeFullHistory ? fullTransactions : splittedTransactions
 
   return (
     <div className='flex flex-col lg:flex-row justify-center items-center gap-5 m-5'>
@@ -254,7 +262,10 @@ const Credits = () => {
         <p className='text-left text-xs flex flex-row justify-start items-center gap-2 px-6'>
           Choose cv package 
           <span className='text-gray-400'>
-            <Info className='h-3 w-auto'/>
+            <Info className='h-3 w-auto'
+              data-tooltip-id="my-tooltip"
+              data-tooltip-content="Select how many CV credits you want to purchase."
+            />
           </span>
         </p>
 
@@ -287,7 +298,13 @@ const Credits = () => {
           <div className='flex flex-row gap-3 justify-center items-center mt-4 px-8'>
             <div className='text-left flex-1'>
                 <label htmlFor="rate" className="inline-flex items-center gap-1">
-                  Rate <span className="text-gray-400"><Info className='h-3 w-auto'/></span>
+                  Rate <span className="text-gray-400">
+                    <Info 
+                    className='h-3 w-auto'
+                      data-tooltip-id="my-tooltip"
+                      data-tooltip-content="Amount per cv"
+                    />
+                    </span>
                 </label>
                 <input 
                   id="total"
@@ -299,7 +316,14 @@ const Credits = () => {
             </div>
             <div className='text-left flex-2'>
                 <label htmlFor="total" className="inline-flex items-center gap-1">
-                  Total <span className="text-gray-400"><Info className='h-3 w-auto'/></span>
+                  Total 
+                  <span className="text-gray-400">
+                    <Info 
+                    className='h-3 w-auto'
+                      data-tooltip-id="my-tooltip"
+                      data-tooltip-content="Total amount to be charged"
+                    />
+                  </span>
                 </label>
                 <input 
                   id="total"
@@ -405,23 +429,25 @@ const Credits = () => {
         <p className="text-center text-gray-400 py-6">
           Loading transactions...
         </p>
-        ) : transactions && transactions.length > 0 ? 
+        ) : fullTransactions && fullTransactions.length > 0 ? 
         (transactions?.map((tx, index) => (
           <div
             key={index}
-            className='border rounded-md p-3 flex justify-between items-center text-sm shadow-lg'
+            className='border rounded-md p-2 flex justify-between items-center text-sm shadow-lg'
           >
             <div className='flex flex-row text-start gap-2 justify-center items-center'>
               <div className='border rounded-[50%] bg-blue-100'>
                 <Square className='w-5 h-auto m-2 text-blue-300'/>
               </div>             
               <div className='flex flex-col'>
-                <span className='font-medium'>{tx.cvCount} CV</span>
-                <span className='text-xs text-gray-500'>Added {tx.cvCount} cv in wallet</span>
+                <span className='font-medium'>{tx.cvCount ? tx.cvCount : `-${tx.cvUsed}` } CV</span>
+                <span className='text-xs text-gray-500'>{tx.cvCount 
+                ? `Added ${tx.cvCount} cv in wallet`
+                : `Deducted ${tx.cvUsed} cv from wallet`}</span>
                 <span className='text-xs text-gray-500'>{new Date(tx.createdAt).toLocaleString()}</span>
               </div>
             </div>
-            <div className='text-black font-semibold'>₹{tx.amount}</div>
+            <div className='text-black font-semibold'>{tx.amount ? `₹${tx.amount}` : ""}</div>
             <div className='border rounded-[50%] bg-blue-100'>
               <TrendingUp className='w-3 h-auto m-1 text-blue-300'/>
             </div>
@@ -437,8 +463,10 @@ const Credits = () => {
 
       {/* Footer */}
       <div className='pb-4 '>
-        <span className='text-sky-400 underline capitalize text-sm cursor-pointer'>
-          see full history
+        <span 
+        className='text-sky-400 underline capitalize text-sm cursor-pointer'
+          onClick={()=>setIsSeeFullHistory(prev=>!prev)}>
+          {isSeeFullHistory ? "hide full history" :"see full history"}
         </span>
       </div>
     </div>

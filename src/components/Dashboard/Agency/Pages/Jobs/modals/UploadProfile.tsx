@@ -175,6 +175,7 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
           companyId: rowData?.jobDetails?.companyId,
           jobId: rowData?.jobDetails?.id,
           candidateParsedCvAwsS3FileName: responseFromAws?.data?.cloudFileName,
+          agencyUserInviteId:rowData?.agencyUserInviteId,
         }
         const createResponse = await uploadingProfileWithOnlyCVName(updatedPayload);
         if(!createResponse?.success && (createResponse?.error as { message?: string })?.message === "Failed to parse CV."){
@@ -332,6 +333,10 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
       const uploadingProfileWithOnlyCVName = async (payload: any) => {
         try {
           const { response,error } = await httpServiceObj.post(`/agency-user-submission/candidate-parse-cv`, payload, true, {}, false,"BASE");
+          if(error){
+            toast.error(error.message,getToastOptions({}))
+            return
+          }
           if (response) {
             return { success: true, data: response };
           }

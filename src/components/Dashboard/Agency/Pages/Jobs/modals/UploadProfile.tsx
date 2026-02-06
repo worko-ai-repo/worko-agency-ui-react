@@ -242,10 +242,10 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
               },
               currentCompany: data?.currentCompany,
               currentDesignation: data?.currentDesignation,
-              totalYOE: data?.totalYOE,
-              relevantYOE: data?.relevantYOE ,
-              currentCTC: data?.currentCTC,
-              expectedCTC: data?.expectedCTC,
+              totalYOE: Number(data?.totalYOE),
+              relevantYOE: Number(data?.relevantYOE),
+              currentCTC: Number(data?.currentCTC),
+              expectedCTC: Number(data?.expectedCTC),
               noticePeriod: Number(data?.noticePeriod),
               location: data?.location,
               readyToRelocate: data?.relocate,
@@ -265,6 +265,7 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
           if (data?.comments?.trim()) {
             payload.agencyComments = data.comments.trim();
           }
+
           const uploadResponse:any = await uploadingProfileWithAllFields(payload);
           if (!uploadResponse.success) {
             // console.log(uploadResponse.data)
@@ -497,11 +498,12 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                       // placeholder='total experience'
                       type="number" 
                       className="input_primary auth_input"
-                      onKeyDown={(e) => {
-                        if (["-", "+", ".", "e", "E"].includes(e.key)) {
-                          e.preventDefault();
-                        }
-                      }}
+                      step="0.1"
+                      // onKeyDown={(e) => {
+                      //   if (["-", "+", ".", "e", "E"].includes(e.key)) {
+                      //     e.preventDefault();
+                      //   }
+                      // }}
                       onPaste={(e) => {
                         e.preventDefault();
                       }}
@@ -519,12 +521,13 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                       disabled={!isResumeValid}
                       // placeholder='relevant experience'
                       type="number" 
+                      step="0.1"
                       className="input_primary auth_input"
-                      onKeyDown={(e) => {
-                        if (["-", "+", ".", "e", "E"].includes(e.key)) {
-                          e.preventDefault();
-                        }
-                      }}
+                      // onKeyDown={(e) => {
+                      //   if (["-", "+", ".", "e", "E"].includes(e.key)) {
+                      //     e.preventDefault();
+                      //   }
+                      // }}
                       onPaste={(e) => {
                         e.preventDefault();
                       }}
@@ -546,12 +549,13 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                       disabled={!isResumeValid}
                       // placeholder='5'
                       type="number" 
+                      step="0.1"
                       className="input_primary auth_input"
-                      onKeyDown={(e) => {
-                        if (["-", "+", ".", "e", "E"].includes(e.key)) {
-                          e.preventDefault();
-                        }
-                      }}
+                      // onKeyDown={(e) => {
+                      //   if (["-", "+", ".", "e", "E"].includes(e.key)) {
+                      //     e.preventDefault();
+                      //   }
+                      // }}
                       onPaste={(e) => {
                         e.preventDefault();
                       }}
@@ -568,12 +572,13 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                       disabled={!isResumeValid}
                       // placeholder='7'
                       type="number" 
+                      step="0.1"                      
                       className="input_primary auth_input"
-                      onKeyDown={(e) => {
-                        if (["-", "+", ".", "e", "E"].includes(e.key)) {
-                          e.preventDefault();
-                        }
-                      }}
+                      // onKeyDown={(e) => {
+                      //   if (["-", "+", ".", "e", "E"].includes(e.key)) {
+                      //     e.preventDefault();
+                      //   }
+                      // }}
                       onPaste={(e) => {
                         e.preventDefault();
                       }}

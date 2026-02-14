@@ -152,32 +152,34 @@ const ScreeningListView: FunctionComponent = () => {
       key: "location",
       label: "Location",
       sortable: true,
-      render: (row: any) => {
-        return (
-          <div className="flex justify-center m-auto w-[150px]">
-            <span 
-            className="truncate block w-full" 
-            data-tooltip-id="my-tooltip"
-            data-tooltip-content={row?.jobLocation}
-            data-tooltip-place="top">
-              {row?.jobLocation ?? "NA"}
-            </span>
-          </div>
-        );
-      },
+      render: (row: any) => row?.jobLocation ?? "NA"
+      // {
+      //   return (
+      //     <div className="flex justify-center m-auto w-[150px]">
+      //       <span 
+      //       className="truncate block w-full" 
+      //       data-tooltip-id="my-tooltip"
+      //       data-tooltip-content={row?.jobLocation}
+      //       data-tooltip-place="top">
+      //         {row?.jobLocation ?? "NA"}
+      //       </span>
+      //     </div>
+      //   );
+      // },
     },
     {
       key: "experienceRange",
       label: "Experience range",
       sortable: true,
-      render: (row:any) => (
-        <div className="flex justify-center m-auto w-[150px]">
-          <span 
-          className="truncate block w-full" >
-            {row?.experienceRange?.min} - {row?.experienceRange?.max}
-          </span>
-        </div>
-      ),
+      render: (row:any) => `${row?.experienceRange?.min ?? "NA"} - ${row?.experienceRange?.max ?? "NA"}`
+      // (
+      //   <div className="flex justify-center m-auto w-[150px]">
+      //     <span 
+      //     className="truncate block w-full" >
+      //       {row?.experienceRange?.min} - {row?.experienceRange?.max}
+      //     </span>
+      //   </div>
+      // ),
     },
     {
       key: "resumesCount",
@@ -188,33 +190,35 @@ const ScreeningListView: FunctionComponent = () => {
       key: "screenOnDate",
       label: "Screen on date",
       sortable: true,
-      render: (row:any) => (
-        <div className="flex justify-center m-auto w-[150px]">
-          <span 
-          className="truncate block w-full" 
-          data-tooltip-id="my-tooltip"
-          data-tooltip-content={new Date(row?.createdAt).toLocaleDateString("en-GB")}
-          data-tooltip-place="top">
-            {new Date(row?.createdAt).toLocaleDateString("en-GB")}
-          </span>
-        </div>
-      ),
+      render: (row:any) => new Date(row?.createdAt).toLocaleDateString("en-GB") ?? "NA"
+      //   (
+      //   <div className="flex justify-center m-auto w-[150px]">
+      //     <span 
+      //     className="truncate block w-full" 
+      //     data-tooltip-id="my-tooltip"
+      //     data-tooltip-content={new Date(row?.createdAt).toLocaleDateString("en-GB")}
+      //     data-tooltip-place="top">
+      //       {new Date(row?.createdAt).toLocaleDateString("en-GB")}
+      //     </span>
+      //   </div>
+      // ),
     },
     {
       key: "doneBy",
       label: "Done by",
       sortable: false,
-      render: () => (
-          <div className="flex justify-center m-auto w-[150px]">
-            <span 
-            className="truncate block w-full" 
-            data-tooltip-id="my-tooltip"
-            data-tooltip-content={userDetails?.fullName}
-            data-tooltip-place="top">
-              {userDetails?.fullName ?? "NA"}
-            </span>
-          </div>
-        ),
+      render: () => userDetails?.fullName ?? "NA"
+        // (
+        //   <div className="flex justify-center m-auto w-[150px]">
+        //     <span 
+        //     className="truncate block w-full" 
+        //     data-tooltip-id="my-tooltip"
+        //     data-tooltip-content={userDetails?.fullName}
+        //     data-tooltip-place="top">
+        //       {userDetails?.fullName ?? "NA"}
+        //     </span>
+        //   </div>
+        // ),
     },
 
     {

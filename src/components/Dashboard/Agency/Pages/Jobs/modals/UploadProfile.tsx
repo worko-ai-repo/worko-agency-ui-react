@@ -1,6 +1,6 @@
 import { AgencyJobsList } from '@Interfaces/AgencyDashboardList.dto';
 import { SendIcon } from 'lucide-react';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useForm } from 'react-hook-form';
 import DuplicateModal from './DuplicateModal';
 import httpServiceObj from '@Services/ApiHandler.service';
@@ -22,6 +22,23 @@ interface UploadProfileProps{
     isOpen: boolean;
     rowData: AgencyJobsList | null;
     localUpdate: (id: string, updatedData: Partial<any>) => void;
+}
+
+interface Education {
+  collage:string;
+  degree:string;
+  passingYear:string;
+  startedYear:string;
+}
+
+interface MultipleCandidateExperience {
+  companyId:string;
+  companyName:string;
+  designation:string;
+  department:string;
+  YOE?: number;
+  startDate?: string;
+  endDate?: string;
 }
 
 interface FormValues {
@@ -46,6 +63,9 @@ interface FormValues {
   userPreferredIndustries:string[];
   userPreferredRoles:string[];
   userPreferredlocations:string[];
+  education:Education[];
+  about:string;
+  multipleCandidateExperience:MultipleCandidateExperience[]
 }
 
 type ParsedCandidate = {
@@ -63,6 +83,9 @@ type ParsedCandidate = {
   userPreferredIndustries:string[];
   userPreferredRoles:string[];
   userPreferredlocations:string[];
+  education:Education[];
+  about:string;
+  multipleCandidateExperience:MultipleCandidateExperience[]
 };
 
 const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpen,rowData,localUpdate}) => {
@@ -88,6 +111,9 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
           userPreferredIndustries:[],
           userPreferredRoles:[],
           userPreferredlocations:[],
+          education:[],
+          about:"",
+          multipleCandidateExperience:[],
         },
       });
       const [visible, setVisible] = useState(false);
@@ -101,6 +127,7 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
       const [isCVParsing, setIsCVParsing] = useState<boolean>(false)
       const [cloudFileName,setCloudFileName] = useState<string | undefined>("");
       const { userDetails } = useAppContext();
+      const modalRef = useRef<HTMLDivElement>(null);
 
       useEffect(() => {
       if (isOpen) {
@@ -144,6 +171,9 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
         setValue("userPreferredIndustries", []);
         setValue("userPreferredRoles", []);
         setValue("userPreferredlocations", []);
+        setValue("education", []);
+        setValue("about", "");
+        setValue("multipleCandidateExperience", []);
 
         // console.log(e.target.files[0])
         const cvFile = e.target.files[0]
@@ -206,7 +236,10 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
         setValue("userPreferredDepartments", data?.userPreferredDepartments ?? []);
         setValue("userPreferredIndustries", data?.userPreferredIndustries ?? []);
         setValue("userPreferredRoles", data?.userPreferredRoles ?? []);
-        setValue("userPreferredlocations", data?.userPreferredlocations ?? []);      
+        setValue("userPreferredlocations", data?.userPreferredlocations ?? []);  
+        setValue("education", data?.education ?? []);
+        setValue("about", data?.about ?? "");  
+        setValue("multipleCandidateExperience", data?.multipleCandidateExperience ?? []);
         if(data?.phoneNumberDetails?.number?.toString().length !== 10){
           setIsContactNumberValid(false)
         }
@@ -258,14 +291,16 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
               technicalSkills: data?.technicalSkills ?? [],
               userPreferredDepartments: data?.userPreferredDepartments ?? [],
               userPreferredIndustries: data?.userPreferredIndustries ?? [],
-              userPreferredlocations: data?.userPreferredLocations ?? [],
-              userPreferredRoles: data?.userPreferredRoles ?? []
+              userPreferredlocations: data?.userPreferredlocations ?? [],
+              userPreferredRoles: data?.userPreferredRoles ?? [],
+              education:data?.education ?? [],
+              about:data?.about,
+              multipleCandidateExperience:data?.multipleCandidateExperience ?? [],
           } as any;      
 
           if (data?.comments?.trim()) {
             payload.agencyComments = data.comments.trim();
           }
-
           const uploadResponse:any = await uploadingProfileWithAllFields(payload);
           if (!uploadResponse.success) {
             // console.log(uploadResponse.data)
@@ -350,12 +385,20 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
 
     return (
       <div
+        onMouseDown={(e) => {
+          if (modalRef.current && !modalRef.current.contains(e.target as Node)) {
+            setShowFullForm(false)
+            reset();
+            onClose();
+          }
+        }}
         className={`fixed inset-0 z-50 flex items-start justify-end transition-opacity duration-300 ease-in-out ${
           isAnimatingIn ? "bg-black bg-opacity-50" : "bg-opacity-0 bg-black"
         } ${visible ? "visible" : "invisible"}`}>
         <div
+          ref={modalRef}
           className={`bg-white rounded-l-lg p-6 w-full max-w-md relative transform transition-transform duration-300 ease-in-out self-auto max-h-[100vh] overflow-y-auto ${
-            isAnimatingIn ? "translate-x-0" : "translate-x-full"
+          !isAnimatingIn ? "animate-slide-out" : "animate-slide-in"
           }`}>
           <button
             onClick={()=>{
@@ -583,8 +626,13 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                         e.preventDefault();
                       }}
                       {...register("expectedCTC",{
-                        required:"expected Ctc is required",
-                        min: { value: 0, message: "Expected CTC cannot be negative" }
+                        required:"Expected CTC is required",
+                        min: { value: 0, message: "Expected CTC cannot be negative" },
+                        validate: (value) => {
+                          const current = Number(watch("currentCTC") ?? 0);
+                          const expected = Number(value ?? 0);
+                          return expected >= current || "Expected CTC cannot be less than Current CTC";
+                        }
                       })}
                     />
                     {errors.expectedCTC && <p className="text-red-500 text-sm mt-1">{errors.expectedCTC.message}</p>}
@@ -685,8 +733,8 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
               className="flex items-center gap-1 px-3 py-3 rounded-xl 
              bg-blue-600 text-white 
              hover:bg-blue-700
-             disabled:opacity-50 disabled:cursor-not-allowed">
-                <SendIcon className='h-4 w-4'/>
+             disabled:opacity-50 disabled:cursor-not-allowed text-xs">
+                <SendIcon className='h-3 w-3'/>
                 {isSubmitting ? 'Submitting...' : 'Submit'}
               </button>
             </div>}

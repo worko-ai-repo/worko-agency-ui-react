@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Eye, FileText, ArrowLeft } from "lucide-react";
 // import { DynamicTable, Column } from "../DynamicTable";
-import ProgressCircle from "@Components/Shared/ui/CircularBar";
+import ProgressCircle from "@Components/Shared/ui/CircularBarAgency";
 
 import { useAppContext } from "@Context/App.context";
 
@@ -61,6 +61,11 @@ export default function ApplicantScreeningTable() {
   const [pdfViewDetails, setPdfViewDetails] = useState<string>();
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [expandedRows, setExpandedRows] = useState<string[]>([]);
+  const [pdfViewUserDetails, setPdfViewUserDetails] = useState<{
+    name: string;
+    YOE?: number;
+    companyName?: string;
+  }>({ name: "" });
   const [pageSize, setPageSize] = useState<number>(10);
   const { id } = useParams<{ id: string }>();
   const baseUrl = import.meta.env.APP_PROXY_AGENCY_BASE
@@ -113,7 +118,6 @@ export default function ApplicantScreeningTable() {
           viewedDate: item.updatedAt ? new Date(item.updatedAt).toLocaleDateString() : null,
         }));
     }
-    console.log(applicantsData.length)
     return [];
   }, [data]);
   const { sortedData, onSortChange } = useSortableData(applicantsData, fallbackKeys,    {
@@ -271,6 +275,11 @@ export default function ApplicantScreeningTable() {
                 row?.cloudFileName
               );
               setPdfViewDetails(url);
+              setPdfViewUserDetails({
+                name: row.name,
+                YOE: row.yoe,
+                companyName: row.company,
+              });
               setIsViewCVModalOpen(true);
             }}
             data-tooltip-id="my-tooltip"
@@ -285,10 +294,10 @@ export default function ApplicantScreeningTable() {
 
   const renderExpandedDetails = (row: (typeof applicantsData)[0]) => (
     <div className="flex justify-between items-center py-2">
-      <div className="text-sm text-gray-600">
+      <div className="text-xs text-gray-600">
         <strong>Status:</strong>
         <span
-          className={`ml-2 px-3 py-1 rounded-full text-xs font-medium ${
+          className={`ml-2 px-3 py-1 rounded-full text-[0.625rem] font-medium ${
             row?.status === "accepted"
               ? "bg-green-100 text-green-800"
               : row?.status === "rejected"
@@ -299,7 +308,7 @@ export default function ApplicantScreeningTable() {
         </span>
       </div>
 
-      <div className="flex gap-4 text-sm text-gray-600">
+      <div className="flex gap-4 text-xs text-gray-600">
         {row?.rejectedDate && (
           <div>
             <span className="font-medium">Rejected on:</span>
@@ -422,7 +431,15 @@ export default function ApplicantScreeningTable() {
         {!pdfViewDetails ? (
           <NoDataPresent />
         ) : (
-          <CVPreviewRaw pdfUrl={pdfViewDetails} onClose={() => setIsViewCVModalOpen(false)} />
+          <CVPreviewRaw 
+            pdfUrl={pdfViewDetails} 
+            onClose={() => {
+              setIsViewCVModalOpen(false)
+              setPdfViewUserDetails({name:""})
+            }}
+            candidateFullDetails={pdfViewUserDetails}
+            showDownload={true} 
+          />
         )}
       </Modal>
     </div>

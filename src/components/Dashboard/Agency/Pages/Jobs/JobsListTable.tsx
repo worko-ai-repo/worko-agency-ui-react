@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CopyCheck, Eye, Pencil, Upload, User } from "lucide-react";
+import { ClipboardCheck, CopyCheck, Eye, Pencil, Upload, User } from "lucide-react";
 import { useSortableData } from "@Hooks/useSortTableData.hook";
 import secureStorage from "@Utils/SecureStorage.utils";
 import { SecureStorageKeyEnum } from "@Enums/SecureStorage.enum";
@@ -231,11 +231,12 @@ const columns = [
         key: "noticePeriod",
         label: "Notice Period",
         sortable: true,
-        render: (row: AgencyJobsList) => (
-            <div className='flex justify-center m-auto w-[150px]'>
-                <span>{row?.jobDetails?.noticePeriod ?? "NA"}</span>
-            </div>
-        ),
+        render: (row: AgencyJobsList) => row?.jobDetails?.noticePeriod ?? "NA"
+        // (
+        //     <div className='flex justify-center m-auto w-[150px]'>
+        //         <span>{row?.jobDetails?.noticePeriod ?? "NA"}</span>
+        //     </div>
+        // ),
     },
     {
         key: "dateAssigned",
@@ -264,25 +265,28 @@ const columns = [
         key: "uploadProfile",
         label: "Upload Profile",
         sortable: false,
+        contentWidth: `max-w-none`,
         render: (row: AgencyJobsList) => (
-            <div className='flex justify-center m-auto w-[120px]'>
+            <div className='flex justify-center items-center m-auto gap-1'>
+            <div>
                 <button 
                 data-tooltip-id="my-tooltip"
                 data-tooltip-content="Upload new profile"
                 data-tooltip-place="top"
+                className="btn-sky flex items-center space-x-2"
                 onClick={()=>{
                   setSelectedRow(row)
                   setIsProfileUploadModalOpen(true)
-                }}
-                className="flex-none inline-flex items-center justify-center gap-1 h-9 rounded-lg px-3 text-xs transition shadow-md mx-1 bg-blue-500 p-3 text-white flex-row">
-                    <Upload className="h-4 w-4"/>
-                    {/* Upload profile */}
+                }}>
+                    <Upload className="h-5 w-5"/>
                 </button>
+            </div>
+            <div>
                 <button
                 data-tooltip-id="my-tooltip"
                 data-tooltip-content="Check duplicate profile"
                 data-tooltip-place="top"
-                className="flex-none inline-flex items-center justify-center gap-2 h-9 rounded-lg p-2 text-xs transition bg-white text-white border-2"
+                className="flex items-center justify-center h-9 w-9 rounded-lg bg-gray-100 border border-gray-500"
                 onClick={()=>{
                   setSelectedRow(row)
                   setCheckIsDuplicate(true)
@@ -290,13 +294,13 @@ const columns = [
                 >
                   <img src={duplicate_profile} alt="" className="h-6 w-6"/>
                 </button>
+            </div>    
             </div>
         ),
     },
     {
         key: "candidatesUploaded",
         label: "Candidates uploaded",
-        contentWidth: `max-w-none`,
         sortable: true,
         render: (row: AgencyJobsList) => (
             <div className='flex justify-center m-auto'>
@@ -307,7 +311,6 @@ const columns = [
     {
         key: "candidatesRejected",
         label: "Candidates rejected",
-        contentWidth: `max-w-none`,
         sortable: true,
         render: (row: AgencyJobsList) => (
             <div className='flex justify-center m-auto'>
@@ -318,7 +321,6 @@ const columns = [
     {
         key: "candidatesInProcess",
         label: "Candidates in-process",
-        contentWidth: `max-w-none`,
         sortable: true,
         render: (row: AgencyJobsList) => (
             <div className='flex justify-center m-auto'>

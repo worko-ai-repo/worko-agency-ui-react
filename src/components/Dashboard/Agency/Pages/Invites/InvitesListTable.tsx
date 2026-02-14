@@ -165,7 +165,6 @@ export default function InvitesListTable(props: any) {
         key: "date",
         label: "Date",
         sortable: true,
-        contentWidth: `max-w-none`,
         render: (row: AgencyInvitesListDetailsDto) => row?.createdAt
                   ? new Date(row.createdAt).toLocaleDateString("en-GB", {
                       day: "2-digit",
@@ -205,7 +204,6 @@ export default function InvitesListTable(props: any) {
                     className="border rounded-lg p-2 bg-green-600 text-white"
                     onClick={() => {
                       acceptAndReject(row,"ACCEPTED")
-                      // setIsEditAgencyModelOpen(true);
                       setEditProfileData(row);
                     }}
                   >
@@ -219,7 +217,6 @@ export default function InvitesListTable(props: any) {
                     className="border rounded-lg p-2 bg-red-600 text-white"
                     onClick={() => {
                       acceptAndReject(row,"REJECTED")
-                      // setIsPauseAgencyModelOpen(true);
                       setEditProfileData(row);
                     }}
                   >
@@ -231,7 +228,7 @@ export default function InvitesListTable(props: any) {
                 data-tooltip-id="my-tooltip"
                 data-tooltip-content={row.inviteStatus as JobApplicationStatusType}
                 data-tooltip-place="top"
-                className={`px-3 py-1 h-fit rounded-full text-xs font-medium overflow-visible  capitalize ${colorClass}`}>
+                className={`px-3 py-1 h-fit rounded-full text-[0.625rem] font-medium overflow-visible  capitalize ${colorClass}`}>
                 {newDisplayStatus[row.inviteStatus as JobApplicationStatusType]}</span>
               }
             </div>

@@ -135,7 +135,11 @@ export default function ApplicantsListTable(props: any) {
   const [isViewCVModalOpen,setIsViewCVModalOpen] = useState<boolean>(false);
   const [viewViewDetailsModal, setViewViewDetailsModal] = useState<boolean>(false);
   const [fullDetails, setFullDetails] = useState<string>("");
-
+  const [pdfViewUserDetails, setPdfViewUserDetails] = useState<{
+    name: string;
+    YOE?: number;
+    companyName?: string;
+  }>({ name: "" });
   // Sorting hook (keeps same fallback keys as before)
     const keyFallbacks = {
         companyName: ["jobDetails.companyName"],
@@ -249,21 +253,22 @@ export default function ApplicantsListTable(props: any) {
           key: "jobProfile",
           label: "Job Profile",
           sortable: true,
-          render: (row: AgencyApplicantsListDetailsDto) => (
-              <div className="flex justify-center m-auto w-[150px] text-center">
-                  <a
-                      href={row?.jobDetails?.jobUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="truncate block w-full"
-                      data-tooltip-id="my-tooltip"
-                      data-tooltip-content={row?.jobDetails?.jobTitle}
-                      data-tooltip-place="top"
-                  >
-                      {row?.jobDetails?.jobTitle ?? "NA"}
-                  </a>
-              </div>
-          ),
+          render: (row: AgencyApplicantsListDetailsDto) => row?.jobDetails?.jobTitle ?? "NA"
+          // (
+          //     <div className="flex justify-center m-auto w-[150px] text-center">
+          //         <a
+          //             href={row?.jobDetails?.jobUrl}
+          //             target="_blank"
+          //             rel="noopener noreferrer"
+          //             className="truncate block w-full"
+          //             data-tooltip-id="my-tooltip"
+          //             data-tooltip-content={row?.jobDetails?.jobTitle}
+          //             data-tooltip-place="top"
+          //         >
+          //             {row?.jobDetails?.jobTitle ?? "NA"}
+          //         </a>
+          //     </div>
+          // ),
       },
       {
           key: "dateSubmitted",
@@ -318,7 +323,7 @@ export default function ApplicantsListTable(props: any) {
           key: "contactNumber",
           label: "Contact number",
           sortable: true,
-          render: (row: AgencyApplicantsListDetailsDto) => `+${row?.candidateParsedCvDetails?.phoneNumberDetails?.countryCode} ${row?.candidateParsedCvDetails?.phoneNumberDetails?.number}`
+          render: (row: AgencyApplicantsListDetailsDto) => `+${row?.candidateParsedCvDetails?.phoneNumberDetails?.countryCode} ${row?.candidateParsedCvDetails?.phoneNumberDetails?.number ?? "NA"}`
           // (
           // <div className='flex justify-center m-auto w-[150px]'>
           //   {row?.candidateParsedCvDetails?.phoneNumberDetails?.countryCode && row?.candidateParsedCvDetails?.phoneNumberDetails?.number
@@ -356,7 +361,6 @@ export default function ApplicantsListTable(props: any) {
       {
           key: "totalYOE",
           label: "Total YOE",
-          contentWidth: `max-w-none`,
           sortable: true,
           render: (row: AgencyApplicantsListDetailsDto) => (
               <div className='flex justify-center m-auto'>
@@ -367,7 +371,6 @@ export default function ApplicantsListTable(props: any) {
       {
           key: "relevantYOE",
           label: "Relevant YOE",
-          contentWidth: `max-w-none`,
           sortable: true,
           render: (row: AgencyApplicantsListDetailsDto) => (
               <div className='flex justify-center m-auto'>
@@ -378,7 +381,6 @@ export default function ApplicantsListTable(props: any) {
       {
           key: "currentCTC",
           label: "CTC",
-          contentWidth: `max-w-none`,
           sortable: true,
           render: (row: AgencyApplicantsListDetailsDto) => (
               <div className='flex justify-center m-auto'>
@@ -389,7 +391,6 @@ export default function ApplicantsListTable(props: any) {
       {
           key: "expectedCTC",
           label: "ECTC",
-          contentWidth: `max-w-none`,
           sortable: true,
           render: (row: AgencyApplicantsListDetailsDto) => (
               <div className='flex justify-center m-auto'>
@@ -400,7 +401,6 @@ export default function ApplicantsListTable(props: any) {
       {
           key: "noticePeriod",
           label: "Notice Period",
-          contentWidth: `max-w-none`,
           sortable: true,
           render: (row: AgencyApplicantsListDetailsDto) => (
               <div className='flex justify-center m-auto'>
@@ -425,7 +425,6 @@ export default function ApplicantsListTable(props: any) {
           key: "readyToRelocate",
           label: "Ready to relocate",
           sortable: true,
-          contentWidth: `max-w-none`,
           render: (row: AgencyApplicantsListDetailsDto) => (
           <div className='flex justify-center m-auto'>
               <span>{row?.candidateParsedCvDetails?.readyToRelocate === true
@@ -441,18 +440,19 @@ export default function ApplicantsListTable(props: any) {
           key: "anyComment",
           label: "Any comment",
           sortable: true,
-          render: (row: AgencyApplicantsListDetailsDto) => (
-              <div className='flex justify-center m-auto w-[150px]'>
-                  <span 
-                  title={row?.agencyComments}
-                  data-tooltip-id="my-tooltip"
-                  data-tooltip-content={"Click to view full details"}
-                  onClick={() => {
-                    setViewViewDetailsModal(true);
-                    setFullDetails(row?.agencyComments || "N/A");
-                  }}
-                  className="truncate block w-full">{row?.agencyComments ?? "NA"}</span>
-              </div>
+          render: (row: AgencyApplicantsListDetailsDto) => 
+          (
+            <div className='flex justify-center items-center m-auto'>
+                <span 
+                title={row?.agencyComments}
+                data-tooltip-id="my-tooltip"
+                data-tooltip-content={"Click to view full details"}
+                onClick={() => {
+                  setViewViewDetailsModal(true);
+                  setFullDetails(row?.agencyComments || "N/A");
+                }}
+                className="truncate block w-full">{row?.agencyComments ?? "NA"}</span>
+            </div>
           ),
       },
       {
@@ -460,7 +460,7 @@ export default function ApplicantsListTable(props: any) {
           label: "CV",
           sortable: false,
           render: (row: AgencyApplicantsListDetailsDto) => (
-          <div className='flex justify-center m-auto w-[40px]'>
+          <div className='flex justify-center m-auto'>
               <button
               data-tooltip-id="my-tooltip"
               data-tooltip-content="View CV"
@@ -479,6 +479,7 @@ export default function ApplicantsListTable(props: any) {
           key: "status",
           label: "Current status",
           sortable: true,
+          contentWidth: `max-w-none`,
           render: (row: AgencyApplicantsListDetailsDto) => {
               // <div className='flex justify-center m-auto w-[150px]'>
               //     <span>{row?.currentStatus ?? "NA"}</span>
@@ -492,7 +493,7 @@ export default function ApplicantsListTable(props: any) {
                     data-tooltip-id="my-tooltip"
                     data-tooltip-content={row?.jobApplicationStatus as JobApplicationStatusType}
                     data-tooltip-place="top"
-                    className={`px-3 py-1 h-fit rounded-full text-xs font-medium overflow-visible  capitalize ${colorClass}`}>
+                    className={`px-3 py-1 h-fit rounded-full text-[0.625rem] font-medium overflow-visible  capitalize ${colorClass}`}>
                     {newDisplayStatus[row?.jobApplicationStatus as JobApplicationStatusType]}
                   </span>
                   </div>
@@ -516,6 +517,11 @@ export default function ApplicantsListTable(props: any) {
         try {
         const {response} = await httpServiceObj.post<any>(`/file/gsu2v/AGENCY_SUBMIT_USER_CV`,payload,true,{},false,"BASE")
         setPdfViewDetails(response.objectUrl)
+        setPdfViewUserDetails({
+          name: row.candidateParsedCvDetails.name,
+          YOE: row.candidateParsedCvDetails?.totalYOE,
+          companyName: row.candidateParsedCvDetails?.currentCompany,
+        });
         setIsViewCVModalOpen(true)
         } catch (error) {
         console.log(error)
@@ -573,8 +579,9 @@ export default function ApplicantsListTable(props: any) {
             onClose={() => {
               setIsViewCVModalOpen(false)
               setEditProfileData(undefined)
+              setPdfViewUserDetails({name:""})
             }} 
-            candidateFullDetails={editProfileData}
+            candidateFullDetails={pdfViewUserDetails}
             showDownload={true}/>
           )}
         </Modal>

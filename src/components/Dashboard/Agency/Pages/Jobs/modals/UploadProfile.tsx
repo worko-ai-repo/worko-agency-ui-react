@@ -590,10 +590,10 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                     <label htmlFor="">Current CTC (in LPA)<span className='text-red-500'>*</span></label>
                     <input 
                       disabled={!isResumeValid}
-                      // placeholder='5'
                       type="number" 
                       step="0.1"
-                      className="input_primary auth_input"
+                      placeholder='Enter your salary in LPA'
+                      className="input_primary auth_input placeholder:text-xs"
                       // onKeyDown={(e) => {
                       //   if (["-", "+", ".", "e", "E"].includes(e.key)) {
                       //     e.preventDefault();
@@ -604,19 +604,21 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                       }}
                       {...register("currentCTC",{
                         required:"current Ctc is required",
-                        min: { value: 0, message: "Current CTC cannot be negative" }
+                        min: { value: 0, message: "Current CTC cannot be negative" },
+                        max: { value: 300, message: "Max 300 allowed" },
                       })}
                     />
                     {errors.currentCTC && <p className="text-red-500 text-sm mt-1">{errors.currentCTC.message}</p>}
+                    <p className='text-xs text-slate-500 text-left'>Enter your salary in LPA(e.g., 25 for 25,00,000 Lakhs per annum).</p>
                 </div>
                 <div className='text-left'>
                     <label htmlFor="">Expected CTC (in LPA)<span className='text-red-500'>*</span></label>
                     <input
                       disabled={!isResumeValid}
-                      // placeholder='7'
                       type="number" 
-                      step="0.1"                      
-                      className="input_primary auth_input"
+                      step="0.1"         
+                      placeholder='Enter your salary in LPA'             
+                      className="input_primary auth_input placeholder:text-xs"
                       // onKeyDown={(e) => {
                       //   if (["-", "+", ".", "e", "E"].includes(e.key)) {
                       //     e.preventDefault();
@@ -628,6 +630,7 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                       {...register("expectedCTC",{
                         required:"Expected CTC is required",
                         min: { value: 0, message: "Expected CTC cannot be negative" },
+                        max: { value: 400, message: "Max 400 allowed" },
                         validate: (value) => {
                           const current = Number(watch("currentCTC") ?? 0);
                           const expected = Number(value ?? 0);
@@ -636,6 +639,7 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
                       })}
                     />
                     {errors.expectedCTC && <p className="text-red-500 text-sm mt-1">{errors.expectedCTC.message}</p>}
+                    <p className='text-xs text-slate-500 text-left'>Enter your salary in LPA(e.g., 25 for 25,00,000 Lakhs per annum).</p>
                 </div>
             </div>}
 

@@ -565,6 +565,7 @@ export default function ApplicantsListTable(props: any) {
         hasPrevPage={currentPage > 1}
         hasNextPage={!!pagination?.lastKey}
         />
+
         <Modal
           isOpen={isViewCVModalOpen}
           onClose={() => {
@@ -585,15 +586,27 @@ export default function ApplicantsListTable(props: any) {
             showDownload={true}/>
           )}
         </Modal>
-        <ViewFullDetail
-          onClose={() => {
-            setViewViewDetailsModal(false);
-            setFullDetails("");
-          }}
-          isOpen={viewViewDetailsModal}
-          fullDetails={fullDetails}
-          displayText={"Comments"}
-        />
+
+        <Modal
+        isOpen={viewViewDetailsModal}
+        onClose={() => {
+          setViewViewDetailsModal(false);
+          setFullDetails("");
+        }}
+        className="max-w-md sm:w-[400px] "
+        classNameHeight="min-h-[30vh]">
+        {viewViewDetailsModal && (
+          <ViewFullDetail
+            onClose={() => {
+              setViewViewDetailsModal(false);
+              setFullDetails("");
+            }}
+            isOpen={viewViewDetailsModal}
+            fullDetails={fullDetails}
+            displayText={"Comments"}
+          />
+        )}
+        </Modal>
     </>
   );
 }

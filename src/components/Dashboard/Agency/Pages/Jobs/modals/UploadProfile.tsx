@@ -178,6 +178,7 @@ const UploadProfile:React.FC<UploadProfileProps> = ({dashboardType,onClose,isOpe
         // console.log(e.target.files[0])
         const cvFile = e.target.files[0]
         const payloadForAws = {
+          agencyUserId:userDetails?.id,
           companyId: rowData?.jobDetails?.companyId,
           jobId: rowData?.jobDetails?.id,
           fileName: cvFile.name,

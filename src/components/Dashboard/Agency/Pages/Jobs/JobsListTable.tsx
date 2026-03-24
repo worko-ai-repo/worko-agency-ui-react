@@ -85,8 +85,8 @@ export default function JobsListTable(props: any) {
     noticePeriod: ["jobDetails.noticePeriod"],
     dateAssigned: ["jobDetails.createdAt"],
     candidatesUploaded: ["totalCandidatesUploaded"],
-    candidatesRejected: ["candidatesRejected", "jobDetails.candidatesRejected"],
-    candidatesInProcess: ["candidatesInProcess", "jobDetails.candidatesInProcess"],
+    candidatesRejectedCount: ["candidatesRejectedCount", "jobDetails.candidatesRejectedCount"],
+    candidatesInProcessCount: ["candidatesInProcessCount", "jobDetails.candidatesInProcessCount"],
   };
 
 //   const { sortedData, onSortChange } = useSortableData(data as any, keyFallbacks);
@@ -309,22 +309,22 @@ const columns = [
         ),
     },
     {
-        key: "candidatesRejected",
+        key: "candidatesRejectedCount",
         label: "Candidates rejected",
         sortable: true,
         render: (row: AgencyJobsList) => (
             <div className='flex justify-center m-auto'>
-                <span>{row?.candidatesRejected ?? "-"}</span>
+                <span>{row?.candidatesRejectedCount ?? "-"}</span>
             </div>
         ),
     },
     {
-        key: "candidatesInProcess",
+        key: "candidatesInProcessCount",
         label: "Candidates in-process",
         sortable: true,
         render: (row: AgencyJobsList) => (
             <div className='flex justify-center m-auto'>
-                <span>{row?.candidatesInProcess ?? "-"}</span>
+                <span>{row?.candidatesInProcessCount ?? "-"}</span>
             </div>
         ),
     },

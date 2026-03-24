@@ -32,8 +32,8 @@ export interface AgencyInvitesListDetailsDto {
 //   noticePeriod: number;
 //   dateAssigned: string,
 //   candidatesUploaded: number;
-//   candidatesRejected: number;
-//   candidatesInProcess: number;
+//   candidatesRejectedCount: number;
+//   candidatesInProcessCount: number;
 // }
 
 export interface AgencyJobsList {
@@ -48,8 +48,8 @@ export interface AgencyJobsList {
   jobDetails:JobDetails;
   //fake data
   totalCandidatesUploaded:number;
-  candidatesRejected:number;
-  candidatesInProcess:number;
+  candidatesRejectedCount:number;
+  candidatesInProcessCount:number;
   agencyUserInviteId:string;
   agencyComments:string;
 }

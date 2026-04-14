@@ -170,9 +170,9 @@ const ForgotPassword = () => {
                     className={`input_primary auth_input ${errors.email && "error"}`}
                     {...register(
                       "email",
-                      pagetype === "GEN"
-                        ? validationRules.personalEmail
-                        : validationRules.corporateEmail
+                      // pagetype === "GEN"
+                        validationRules.personalEmail
+                        // : validationRules.corporateEmail
                     )}
                   />
                   {errors.email && (
